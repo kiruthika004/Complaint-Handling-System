@@ -1,0 +1,321 @@
+        -:    0:Source:../src/utils.c
+        -:    0:Graph:/tmp/utils.gcno
+        -:    0:Data:/tmp/utils.gcda
+        -:    0:Runs:20
+        -:    1:#include <ctype.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include <stdlib.h>
+        -:    4:#include <string.h>
+        -:    5:#include <time.h>
+        -:    6:
+        -:    7:#include "common.h"
+        -:    8:
+    #####:    9:void readLine(
+        -:   10:    const char *prompt,
+        -:   11:    char *buffer,
+        -:   12:    size_t bufferSize
+        -:   13:)
+        -:   14:{
+        -:   15:    size_t length;
+        -:   16:    int character;
+        -:   17:
+    #####:   18:    if (buffer == NULL || bufferSize == 0U)
+        -:   19:    {
+    #####:   20:        return;
+        -:   21:    }
+        -:   22:
+        -:   23:    while (1)
+        -:   24:    {
+    #####:   25:        printf("%s", prompt);
+        -:   26:
+    #####:   27:        if (fgets(buffer, (int)bufferSize, stdin) == NULL)
+        -:   28:        {
+    #####:   29:            buffer[0] = '\0';
+    #####:   30:            return;
+        -:   31:        }
+        -:   32:
+    #####:   33:        length = strlen(buffer);
+        -:   34:
+    #####:   35:        if (length > 0U &&
+    #####:   36:            buffer[length - 1U] == '\n')
+        -:   37:        {
+    #####:   38:            buffer[length - 1U] = '\0';
+        -:   39:        }
+        -:   40:        else
+        -:   41:        {
+    #####:   42:            while ((character = getchar()) != '\n' &&
+        -:   43:                   character != EOF)
+        -:   44:            {
+        -:   45:                /* Discard additional input. */
+        -:   46:            }
+        -:   47:        }
+        -:   48:
+    #####:   49:        if (buffer[0] != '\0')
+        -:   50:        {
+    #####:   51:            return;
+        -:   52:        }
+        -:   53:
+    #####:   54:        puts("Input cannot be empty.");
+        -:   55:    }
+        -:   56:}
+        -:   57:
+    #####:   58:int readInteger(
+        -:   59:    const char *prompt,
+        -:   60:    int minimum,
+        -:   61:    int maximum
+        -:   62:)
+        -:   63:{
+        -:   64:    char input[64];
+        -:   65:    char *endPointer;
+        -:   66:    long value;
+        -:   67:
+        -:   68:    while (1)
+        -:   69:    {
+    #####:   70:        readLine(prompt, input, sizeof(input));
+        -:   71:
+    #####:   72:        value = strtol(input, &endPointer, 10);
+        -:   73:
+    #####:   74:        if (*endPointer == '\0' &&
+    #####:   75:            value >= minimum &&
+    #####:   76:            value <= maximum)
+        -:   77:        {
+    #####:   78:            return (int)value;
+        -:   79:        }
+        -:   80:
+    #####:   81:        printf(
+        -:   82:            "Enter a value between %d and %d.\n",
+        -:   83:            minimum,
+        -:   84:            maximum
+        -:   85:        );
+        -:   86:    }
+        -:   87:}
+        -:   88:
+       72:   89:int validateEmail(const char *email)
+        -:   90:{
+        -:   91:    const char *atSymbol;
+        -:   92:    const char *dotSymbol;
+        -:   93:
+       72:   94:    if (email == NULL ||
+       56:   95:        strchr(email, ' ') != NULL)
+        -:   96:    {
+       32:   97:        return 0;
+        -:   98:    }
+        -:   99:
+       40:  100:    atSymbol = strchr(email, '@');
+        -:  101:
+       40:  102:    if (atSymbol == NULL ||
+        -:  103:        atSymbol == email)
+        -:  104:    {
+       20:  105:        return 0;
+        -:  106:    }
+        -:  107:
+       20:  108:    dotSymbol = strchr(atSymbol + 1, '.');
+        -:  109:
+      40*:  110:    return dotSymbol != NULL &&
+       20:  111:           dotSymbol[1] != '\0';
+        -:  112:}
+        -:  113:
+       56:  114:int validatePhone(const char *phone)
+        -:  115:{
+        -:  116:    size_t index;
+        -:  117:    size_t length;
+        -:  118:
+       56:  119:    if (phone == NULL)
+        -:  120:    {
+       16:  121:        return 0;
+        -:  122:    }
+        -:  123:
+       40:  124:    length = strlen(phone);
+        -:  125:
+       40:  126:    if (length < 8U || length > 15U)
+        -:  127:    {
+    #####:  128:        return 0;
+        -:  129:    }
+        -:  130:
+      280:  131:    for (index = 0U; index < length; index++)
+        -:  132:    {
+      260:  133:        if (!isdigit((unsigned char)phone[index]))
+        -:  134:        {
+       20:  135:            return 0;
+        -:  136:        }
+        -:  137:    }
+        -:  138:
+       20:  139:    return 1;
+        -:  140:}
+        -:  141:
+      482:  142:void getCurrentTimestamp(
+        -:  143:    char *buffer,
+        -:  144:    size_t bufferSize
+        -:  145:)
+        -:  146:{
+        -:  147:    time_t currentTime;
+        -:  148:    time_t istTime;
+        -:  149:    struct tm *istDateTime;
+        -:  150:    size_t result;
+        -:  151:
+      482:  152:    if (buffer == NULL || bufferSize == 0U)
+        -:  153:    {
+    #####:  154:        return;
+        -:  155:    }
+        -:  156:
+      482:  157:    currentTime = time(NULL);
+        -:  158:
+      482:  159:    if (currentTime == (time_t)-1)
+        -:  160:    {
+    #####:  161:        (void)snprintf(
+        -:  162:            buffer,
+        -:  163:            bufferSize,
+        -:  164:            "Timestamp unavailable"
+        -:  165:        );
+        -:  166:
+    #####:  167:        return;
+        -:  168:    }
+        -:  169:
+        -:  170:    /*
+        -:  171:     * Indian Standard Time is UTC + 05:30.
+        -:  172:     *
+        -:  173:     * 5 hours  = 5 * 60 * 60 seconds
+        -:  174:     * 30 mins  = 30 * 60 seconds
+        -:  175:     * Total    = 19800 seconds
+        -:  176:     */
+      482:  177:    istTime = currentTime + (time_t)(5 * 60 * 60)
+      482:  178:                          + (time_t)(30 * 60);
+        -:  179:
+        -:  180:    /*
+        -:  181:     * gmtime() is used because the IST offset
+        -:  182:     * has already been added manually.
+        -:  183:     */
+      482:  184:    istDateTime = gmtime(&istTime);
+        -:  185:
+      482:  186:    if (istDateTime == NULL)
+        -:  187:    {
+    #####:  188:        (void)snprintf(
+        -:  189:            buffer,
+        -:  190:            bufferSize,
+        -:  191:            "Timestamp unavailable"
+        -:  192:        );
+        -:  193:
+    #####:  194:        return;
+        -:  195:    }
+        -:  196:
+      482:  197:    result = strftime(
+        -:  198:        buffer,
+        -:  199:        bufferSize,
+        -:  200:        "%Y-%m-%d %H:%M:%S",
+        -:  201:        istDateTime
+        -:  202:    );
+        -:  203:
+      482:  204:    if (result == 0U)
+        -:  205:    {
+    #####:  206:        (void)snprintf(
+        -:  207:            buffer,
+        -:  208:            bufferSize,
+        -:  209:            "Timestamp unavailable"
+        -:  210:        );
+        -:  211:
+    #####:  212:        return;
+        -:  213:    }
+        -:  214:
+        -:  215:    /*
+        -:  216:     * Append the fixed IST timezone indicator.
+        -:  217:     */
+      482:  218:    (void)snprintf(
+        -:  219:        buffer + result,
+        -:  220:        bufferSize - result,
+        -:  221:        " +0530 IST"
+        -:  222:    );
+        -:  223:}
+      187:  224:const char *getStatusText(
+        -:  225:    ComplaintStatus status
+        -:  226:)
+        -:  227:{
+      187:  228:    switch (status)
+        -:  229:    {
+       47:  230:        case STATUS_OPEN:
+       47:  231:            return "Open";
+        -:  232:
+       50:  233:        case STATUS_IN_PROGRESS:
+       50:  234:            return "In Progress";
+        -:  235:
+       30:  236:        case STATUS_ESCALATED:
+       30:  237:            return "Escalated";
+        -:  238:
+       30:  239:        case STATUS_RESOLVED:
+       30:  240:            return "Resolved";
+        -:  241:
+       30:  242:        case STATUS_CLOSED:
+       30:  243:            return "Closed";
+        -:  244:
+    #####:  245:        default:
+    #####:  246:            return "Unknown";
+        -:  247:    }
+        -:  248:}
+        -:  249:
+      180:  250:const char *getPriorityText(
+        -:  251:    ComplaintPriority priority
+        -:  252:)
+        -:  253:{
+      180:  254:    switch (priority)
+        -:  255:    {
+       30:  256:        case PRIORITY_LOW:
+       30:  257:            return "Low";
+        -:  258:
+       30:  259:        case PRIORITY_MEDIUM:
+       30:  260:            return "Medium";
+        -:  261:
+       70:  262:        case PRIORITY_HIGH:
+       70:  263:            return "High";
+        -:  264:
+       50:  265:        case PRIORITY_CRITICAL:
+       50:  266:            return "Critical";
+        -:  267:
+    #####:  268:        default:
+    #####:  269:            return "Unknown";
+        -:  270:    }
+        -:  271:}
+        -:  272:
+      310:  273:const char *getCategoryText(
+        -:  274:    ComplaintCategory category
+        -:  275:)
+        -:  276:{
+      310:  277:    switch (category)
+        -:  278:    {
+       50:  279:        case CATEGORY_DAMAGED_PRODUCT:
+       50:  280:            return "Damaged Product";
+        -:  281:
+       30:  282:        case CATEGORY_WRONG_DELIVERY:
+       30:  283:            return "Wrong Delivery";
+        -:  284:
+       30:  285:        case CATEGORY_MISSING_ITEM:
+       30:  286:            return "Missing Item";
+        -:  287:
+       30:  288:        case CATEGORY_DELIVERY_DELAY:
+       30:  289:            return "Delivery Delay";
+        -:  290:
+       50:  291:        case CATEGORY_PAYMENT_ISSUE:
+       50:  292:            return "Payment Issue";
+        -:  293:
+       30:  294:        case CATEGORY_REFUND_DELAY:
+       30:  295:            return "Refund Delay";
+        -:  296:
+       30:  297:        case CATEGORY_CANCELLATION_ISSUE:
+       30:  298:            return "Cancellation Issue";
+        -:  299:
+       30:  300:        case CATEGORY_PRODUCT_QUALITY:
+       30:  301:            return "Product Quality";
+        -:  302:
+       30:  303:        case CATEGORY_OTHER:
+       30:  304:            return "Other";
+        -:  305:
+    #####:  306:        default:
+    #####:  307:            return "Unknown";
+        -:  308:    }
+        -:  309:}
+        -:  310:
+    #####:  311:void pauseScreen(void)
+        -:  312:{
+        -:  313:    char input[8];
+        -:  314:
+    #####:  315:    printf("\nPress Enter to continue...");
+    #####:  316:    (void)fgets(input, sizeof(input), stdin);
+    #####:  317:}

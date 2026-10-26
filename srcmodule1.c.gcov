@@ -1,0 +1,570 @@
+        -:    0:Source:src/srcmodule1.c
+        -:    0:Graph:module1.gcno
+        -:    0:Data:module1.gcda
+        -:    0:Runs:1
+        -:    1:#include <stdio.h>
+        -:    2:#include <stdlib.h>
+        -:    3:#include <string.h>
+        -:    4:
+        -:    5:#include "module1.h"
+        -:    6:#include "module2.h"
+        -:    7:
+function findComplaintById called 24 returned 100% blocks executed 100%
+       24:    8:ComplaintNode *findComplaintById(
+        -:    9:    ApplicationContext *app,
+        -:   10:    unsigned int complaintId
+        -:   11:)
+        -:   12:{
+        -:   13:    ComplaintNode *current;
+        -:   14:
+       24:   15:    if (app == NULL)
+branch  0 taken 4% (fallthrough)
+branch  1 taken 96%
+        -:   16:    {
+        1:   17:        return NULL;
+        -:   18:    }
+        -:   19:
+       23:   20:    current = app->complaintHead;
+        -:   21:
+       24:   22:    while (current != NULL)
+branch  0 taken 67%
+branch  1 taken 33% (fallthrough)
+        -:   23:    {
+       16:   24:        if (current->data.complaintId ==
+branch  0 taken 94% (fallthrough)
+branch  1 taken 6%
+        -:   25:            complaintId)
+        -:   26:        {
+       15:   27:            return current;
+        -:   28:        }
+        -:   29:
+        1:   30:        current = current->next;
+        -:   31:    }
+        -:   32:
+        8:   33:    return NULL;
+        -:   34:}
+        -:   35:
+function displayComplaint called 10 returned 100% blocks executed 100%
+       10:   36:void displayComplaint(
+        -:   37:    const Complaint *complaint
+        -:   38:)
+        -:   39:{
+       10:   40:    if (complaint == NULL)
+branch  0 taken 10% (fallthrough)
+branch  1 taken 90%
+        -:   41:    {
+        1:   42:        return;
+        -:   43:    }
+        -:   44:
+        9:   45:    puts("\n----------------------------------------");
+call    0 returned 100%
+        9:   46:    printf("Complaint ID    : %u\n",
+        9:   47:           complaint->complaintId);
+call    0 returned 100%
+        9:   48:    printf("Customer Name   : %s\n",
+        9:   49:           complaint->customerName);
+call    0 returned 100%
+        9:   50:    printf("Order ID        : %s\n",
+        9:   51:           complaint->orderId);
+call    0 returned 100%
+        9:   52:    printf("Product ID      : %s\n",
+        9:   53:           complaint->productId);
+call    0 returned 100%
+        9:   54:    printf("Category        : %s\n",
+call    0 returned 100%
+        9:   55:           getCategoryText(complaint->category));
+call    0 returned 100%
+        9:   56:    printf("Title           : %s\n",
+        9:   57:           complaint->title);
+call    0 returned 100%
+        9:   58:    printf("Description     : %s\n",
+        9:   59:           complaint->description);
+call    0 returned 100%
+        9:   60:    printf("Priority        : %s\n",
+call    0 returned 100%
+        9:   61:           getPriorityText(complaint->priority));
+call    0 returned 100%
+        9:   62:    printf("Status          : %s\n",
+call    0 returned 100%
+        9:   63:           getStatusText(complaint->status));
+call    0 returned 100%
+        -:   64:
+        9:   65:    printf(
+call    0 returned 100%
+        -:   66:        "Admin Remark    : %s\n",
+        9:   67:        complaint->adminRemark[0] != '\0'
+branch  0 taken 11% (fallthrough)
+branch  1 taken 89%
+        -:   68:            ? complaint->adminRemark
+        -:   69:            : "Not available"
+        -:   70:    );
+        -:   71:
+        9:   72:    printf(
+call    0 returned 100%
+        -:   73:        "Resolution      : %s\n",
+        9:   74:        complaint->resolution[0] != '\0'
+branch  0 taken 11% (fallthrough)
+branch  1 taken 89%
+        -:   75:            ? complaint->resolution
+        -:   76:            : "Not available"
+        -:   77:    );
+        -:   78:
+        9:   79:    printf("Created At      : %s\n",
+        9:   80:           complaint->createdAt);
+call    0 returned 100%
+        9:   81:    printf("Last Updated At : %s\n",
+        9:   82:           complaint->updatedAt);
+call    0 returned 100%
+        -:   83:
+        9:   84:    puts("----------------------------------------");
+call    0 returned 100%
+        -:   85:}
+        -:   86:
+function registerComplaint called 2 returned 100% blocks executed 85%
+        2:   87:int registerComplaint(
+        -:   88:    ApplicationContext *app
+        -:   89:)
+        -:   90:{
+        -:   91:    ComplaintNode *newNode;
+        -:   92:    ComplaintNode **current;
+        -:   93:
+        2:   94:    if (app == NULL)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:   95:    {
+        1:   96:        return 0;
+        -:   97:    }
+        -:   98:
+        1:   99:    newNode = (ComplaintNode *)calloc(1U, sizeof(*newNode));
+        -:  100:
+        1:  101:    if (newNode == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  102:    {
+    #####:  103:        puts("Memory allocation failed.");
+call    0 never executed
+    #####:  104:        return 0;
+        -:  105:    }
+        -:  106:
+        1:  107:    readLine(
+        -:  108:        "Customer name: ",
+        1:  109:        newNode->data.customerName,
+call    0 returned 100%
+        -:  110:        sizeof(newNode->data.customerName)
+        -:  111:    );
+        -:  112:
+        -:  113:    do
+        -:  114:    {
+        1:  115:        readLine(
+        -:  116:            "Email: ",
+        1:  117:            newNode->data.email,
+call    0 returned 100%
+        -:  118:            sizeof(newNode->data.email)
+        -:  119:        );
+        -:  120:
+        1:  121:        if (!validateEmail(newNode->data.email))
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  122:        {
+    #####:  123:            puts("Invalid email format.");
+call    0 never executed
+        -:  124:        }
+        -:  125:    }
+        1:  126:    while (!validateEmail(newNode->data.email));
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  127:
+        -:  128:    do
+        -:  129:    {
+        1:  130:        readLine(
+        -:  131:            "Phone: ",
+        1:  132:            newNode->data.phone,
+call    0 returned 100%
+        -:  133:            sizeof(newNode->data.phone)
+        -:  134:        );
+        -:  135:
+        1:  136:        if (!validatePhone(newNode->data.phone))
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  137:        {
+    #####:  138:            puts(
+call    0 never executed
+        -:  139:                "Phone number must contain "
+        -:  140:                "8 to 15 digits."
+        -:  141:            );
+        -:  142:        }
+        -:  143:    }
+        1:  144:    while (!validatePhone(newNode->data.phone));
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  145:
+        1:  146:    readLine(
+        -:  147:        "Order ID: ",
+        1:  148:        newNode->data.orderId,
+call    0 returned 100%
+        -:  149:        sizeof(newNode->data.orderId)
+        -:  150:    );
+        -:  151:
+        1:  152:    readLine(
+        -:  153:        "Product ID: ",
+        1:  154:        newNode->data.productId,
+call    0 returned 100%
+        -:  155:        sizeof(newNode->data.productId)
+        -:  156:    );
+        -:  157:
+        1:  158:    puts("\nComplaint Categories");
+call    0 returned 100%
+        1:  159:    puts("1. Damaged Product");
+call    0 returned 100%
+        1:  160:    puts("2. Wrong Delivery");
+call    0 returned 100%
+        1:  161:    puts("3. Missing Item");
+call    0 returned 100%
+        1:  162:    puts("4. Delivery Delay");
+call    0 returned 100%
+        1:  163:    puts("5. Payment Issue");
+call    0 returned 100%
+        1:  164:    puts("6. Refund Delay");
+call    0 returned 100%
+        1:  165:    puts("7. Cancellation Issue");
+call    0 returned 100%
+        1:  166:    puts("8. Product Quality");
+call    0 returned 100%
+        1:  167:    puts("9. Other");
+call    0 returned 100%
+        -:  168:
+        1:  169:    newNode->data.category =
+        1:  170:        (ComplaintCategory)readInteger(
+call    0 returned 100%
+        -:  171:            "Category: ",
+        -:  172:            1,
+        -:  173:            9
+        -:  174:        );
+        -:  175:
+        1:  176:    readLine(
+        -:  177:        "Complaint title: ",
+        1:  178:        newNode->data.title,
+call    0 returned 100%
+        -:  179:        sizeof(newNode->data.title)
+        -:  180:    );
+        -:  181:
+        1:  182:    readLine(
+        -:  183:        "Description: ",
+        1:  184:        newNode->data.description,
+call    0 returned 100%
+        -:  185:        sizeof(newNode->data.description)
+        -:  186:    );
+        -:  187:
+        1:  188:    app->counters.lastComplaintId++;
+        -:  189:
+        1:  190:    newNode->data.complaintId =
+        1:  191:        app->counters.lastComplaintId;
+        -:  192:
+        1:  193:    newNode->data.priority =
+        -:  194:        PRIORITY_MEDIUM;
+        -:  195:
+        1:  196:    newNode->data.status =
+        -:  197:        STATUS_OPEN;
+        -:  198:
+        1:  199:    getCurrentTimestamp(
+        1:  200:        newNode->data.createdAt,
+call    0 returned 100%
+        -:  201:        sizeof(newNode->data.createdAt)
+        -:  202:    );
+        -:  203:
+        1:  204:    (void)snprintf(
+        1:  205:        newNode->data.updatedAt,
+        -:  206:        sizeof(newNode->data.updatedAt),
+        -:  207:        "%s",
+        1:  208:        newNode->data.createdAt
+        -:  209:    );
+        -:  210:
+        1:  211:    current = &app->complaintHead;
+        -:  212:
+        1:  213:    while (*current != NULL)
+branch  0 taken 0%
+branch  1 taken 100% (fallthrough)
+        -:  214:    {
+    #####:  215:        current = &(*current)->next;
+        -:  216:    }
+        -:  217:
+        1:  218:    *current = newNode;
+        -:  219:
+        2:  220:    if (!saveComplaints(app) ||
+call    0 returned 100%
+branch  1 taken 100% (fallthrough)
+branch  2 taken 0%
+branch  3 taken 0% (fallthrough)
+branch  4 taken 100%
+        1:  221:        !saveCounters(app))
+call    0 returned 100%
+        -:  222:    {
+    #####:  223:        puts("Unable to save complaint.");
+call    0 never executed
+    #####:  224:        return 0;
+        -:  225:    }
+        -:  226:
+        1:  227:    (void)addComplaintHistory(
+call    0 returned 100%
+        -:  228:        app,
+        -:  229:        newNode->data.complaintId,
+        -:  230:        "Registered",
+        -:  231:        "Complaint created with Open status"
+        -:  232:    );
+        -:  233:
+        1:  234:    writeAuditLog(
+call    0 returned 100%
+        -:  235:        "Customer registered a complaint"
+        -:  236:    );
+        -:  237:
+        1:  238:   puts("\n===========================================");
+call    0 returned 100%
+        1:  239:puts("       COMPLAINT REGISTERED SUCCESSFULLY");
+call    0 returned 100%
+        1:  240:puts("===========================================");
+call    0 returned 100%
+        -:  241:
+        1:  242:printf(
+call    0 returned 100%
+        -:  243:    "  COMPLAINT ID : %u\n",
+        -:  244:    newNode->data.complaintId
+        -:  245:);
+        -:  246:
+        1:  247:printf(
+        -:  248:    "  REGISTERED AT: %s\n",
+        1:  249:    newNode->data.createdAt
+call    0 returned 100%
+        -:  250:);
+        -:  251:
+        1:  252:puts("-------------------------------------------");
+call    0 returned 100%
+        1:  253:puts("Please note this Complaint ID carefully.");
+call    0 returned 100%
+        1:  254:puts("The Complaint ID is required for tracking");
+call    0 returned 100%
+        1:  255:puts("and all future complaint references.");
+call    0 returned 100%
+        1:  256:puts("===========================================");
+call    0 returned 100%
+        -:  257:
+        1:  258:    return 1;
+        -:  259:}
+        -:  260:
+function trackComplaint called 3 returned 100% blocks executed 94%
+        3:  261:int trackComplaint(
+        -:  262:    const ApplicationContext *app
+        -:  263:)
+        -:  264:{
+        -:  265:    unsigned int complaintId;
+        -:  266:    char orderId[ID_LENGTH];
+        -:  267:    char contact[CONTACT_LENGTH];
+        -:  268:    const ComplaintNode *current;
+        -:  269:
+        3:  270:    if (app == NULL)
+branch  0 taken 33% (fallthrough)
+branch  1 taken 67%
+        -:  271:    {
+        1:  272:        return 0;
+        -:  273:    }
+        -:  274:
+        2:  275:    complaintId =
+        2:  276:        (unsigned int)readInteger(
+call    0 returned 100%
+        -:  277:            "Complaint ID: ",
+        -:  278:            1,
+        -:  279:            2147483647
+        -:  280:        );
+        -:  281:
+        2:  282:    readLine(
+call    0 returned 100%
+        -:  283:        "Order ID: ",
+        -:  284:        orderId,
+        -:  285:        sizeof(orderId)
+        -:  286:    );
+        -:  287:
+        2:  288:    readLine(
+call    0 returned 100%
+        -:  289:        "Email or phone: ",
+        -:  290:        contact,
+        -:  291:        sizeof(contact)
+        -:  292:    );
+        -:  293:
+        2:  294:    current = app->complaintHead;
+        -:  295:
+        3:  296:    while (current != NULL)
+branch  0 taken 67%
+branch  1 taken 33% (fallthrough)
+        -:  297:    {
+        2:  298:        if (current->data.complaintId ==
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        2:  299:                complaintId &&
+        2:  300:            strcmp(
+        2:  301:                current->data.orderId,
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  302:                orderId
+        1:  303:            ) == 0 &&
+        1:  304:            (strcmp(
+        1:  305:                 current->data.email,
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  306:                 contact
+    #####:  307:             ) == 0 ||
+    #####:  308:             strcmp(
+    #####:  309:                 current->data.phone,
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  310:                 contact
+        -:  311:             ) == 0))
+        -:  312:        {
+        1:  313:            displayComplaint(&current->data);
+call    0 returned 100%
+        1:  314:            return 1;
+        -:  315:        }
+        -:  316:
+        1:  317:        current = current->next;
+        -:  318:    }
+        -:  319:
+        1:  320:    puts(
+call    0 returned 100%
+        -:  321:        "Complaint not found or "
+        -:  322:        "verification failed."
+        -:  323:    );
+        -:  324:
+        1:  325:    return 0;
+        -:  326:}
+        -:  327:
+function viewAllComplaints called 4 returned 100% blocks executed 100%
+        4:  328:void viewAllComplaints(
+        -:  329:    const ApplicationContext *app
+        -:  330:)
+        -:  331:{
+        -:  332:    const ComplaintNode *current;
+        -:  333:
+        4:  334:    if (app == NULL ||
+branch  0 taken 75% (fallthrough)
+branch  1 taken 25%
+        3:  335:        app->complaintHead == NULL)
+branch  0 taken 33% (fallthrough)
+branch  1 taken 67%
+        -:  336:    {
+        2:  337:        puts("No complaints are available.");
+call    0 returned 100%
+        2:  338:        return;
+        -:  339:    }
+        -:  340:
+        2:  341:    current = app->complaintHead;
+        -:  342:
+        5:  343:    while (current != NULL)
+branch  0 taken 60%
+branch  1 taken 40% (fallthrough)
+        -:  344:    {
+        3:  345:        displayComplaint(&current->data);
+call    0 returned 100%
+        3:  346:        current = current->next;
+        -:  347:    }
+        -:  348:}
+        -:  349:
+function filterComplaints called 5 returned 100% blocks executed 100%
+        5:  350:void filterComplaints(
+        -:  351:    const ApplicationContext *app
+        -:  352:)
+        -:  353:{
+        -:  354:    int filterType;
+        -:  355:    int value;
+        5:  356:    int found = 0;
+        -:  357:    const ComplaintNode *current;
+        -:  358:
+        5:  359:    if (app == NULL)
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        -:  360:    {
+        1:  361:        return;
+        -:  362:    }
+        -:  363:
+        4:  364:    filterType = readInteger(
+call    0 returned 100%
+        -:  365:        "Filter by "
+        -:  366:        "1.Status 2.Priority 3.Category: ",
+        -:  367:        1,
+        -:  368:        3
+        -:  369:    );
+        -:  370:
+        4:  371:    if (filterType == 1)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  372:    {
+        2:  373:        value = readInteger(
+call    0 returned 100%
+        -:  374:            "Status value (1-5): ",
+        -:  375:            1,
+        -:  376:            5
+        -:  377:        );
+        -:  378:    }
+        2:  379:    else if (filterType == 2)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  380:    {
+        1:  381:        value = readInteger(
+call    0 returned 100%
+        -:  382:            "Priority value (1-4): ",
+        -:  383:            1,
+        -:  384:            4
+        -:  385:        );
+        -:  386:    }
+        -:  387:    else
+        -:  388:    {
+        1:  389:        value = readInteger(
+call    0 returned 100%
+        -:  390:            "Category value (1-9): ",
+        -:  391:            1,
+        -:  392:            9
+        -:  393:        );
+        -:  394:    }
+        -:  395:
+        4:  396:    current = app->complaintHead;
+        -:  397:
+        8:  398:    while (current != NULL)
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+        -:  399:    {
+        4:  400:        if ((filterType == 1 &&
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        4:  401:             (int)current->data.status == value) ||
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+branch  2 taken 33% (fallthrough)
+branch  3 taken 67%
+        1:  402:            (filterType == 2 &&
+        3:  403:             (int)current->data.priority == value) ||
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+branch  2 taken 50% (fallthrough)
+branch  3 taken 50%
+        1:  404:            (filterType == 3 &&
+        1:  405:             (int)current->data.category == value))
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  406:        {
+        3:  407:            displayComplaint(&current->data);
+call    0 returned 100%
+        3:  408:            found = 1;
+        -:  409:        }
+        -:  410:
+        4:  411:        current = current->next;
+        -:  412:    }
+        -:  413:
+        4:  414:    if (!found)
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  415:    {
+        1:  416:        puts("No matching complaints found.");
+call    0 returned 100%
+        -:  417:    }
+        -:  418:}

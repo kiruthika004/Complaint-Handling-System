@@ -1,0 +1,1703 @@
+        -:    0:Source:src/srcmodule2.c
+        -:    0:Graph:module2.gcno
+        -:    0:Data:module2.gcda
+        -:    0:Runs:1
+        -:    1:#include <stdio.h>
+        -:    2:#include <stdlib.h>
+        -:    3:#include <string.h>
+        -:    4:
+        -:    5:#include "module1.h"
+        -:    6:#include "module2.h"
+        -:    7:
+        -:    8:/* =========================================================
+        -:    9: * INTERNAL HELPER FUNCTIONS
+        -:   10: * ========================================================= */
+        -:   11:
+function appendComplaintNode called 2 returned 100% blocks executed 64%
+        2:   12:static int appendComplaintNode(
+        -:   13:    ApplicationContext *app,
+        -:   14:    const Complaint *complaint
+        -:   15:)
+        -:   16:{
+        -:   17:    ComplaintNode *newNode;
+        -:   18:    ComplaintNode **current;
+        -:   19:
+        2:   20:    if (app == NULL || complaint == NULL)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+        -:   21:    {
+    #####:   22:        return 0;
+        -:   23:    }
+        -:   24:
+        2:   25:    newNode = (ComplaintNode *)malloc(sizeof(*newNode));
+        -:   26:
+        2:   27:    if (newNode == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:   28:    {
+    #####:   29:        writeApplicationLog(
+call    0 never executed
+        -:   30:            "APPEND_COMPLAINT",
+        -:   31:            "Memory allocation failed"
+        -:   32:        );
+        -:   33:
+    #####:   34:        return 0;
+        -:   35:    }
+        -:   36:
+        2:   37:    newNode->data = *complaint;
+        2:   38:    newNode->next = NULL;
+        -:   39:
+        2:   40:    current = &app->complaintHead;
+        -:   41:
+        2:   42:    while (*current != NULL)
+branch  0 taken 0%
+branch  1 taken 100% (fallthrough)
+        -:   43:    {
+    #####:   44:        current = &(*current)->next;
+        -:   45:    }
+        -:   46:
+        2:   47:    *current = newNode;
+        -:   48:
+        2:   49:    return 1;
+        -:   50:}
+        -:   51:
+function appendHistoryNode called 5 returned 100% blocks executed 64%
+        5:   52:static int appendHistoryNode(
+        -:   53:    ApplicationContext *app,
+        -:   54:    const ComplaintHistory *history
+        -:   55:)
+        -:   56:{
+        -:   57:    HistoryNode *newNode;
+        -:   58:    HistoryNode **current;
+        -:   59:
+        5:   60:    if (app == NULL || history == NULL)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+        -:   61:    {
+    #####:   62:        return 0;
+        -:   63:    }
+        -:   64:
+        5:   65:    newNode = (HistoryNode *)malloc(sizeof(*newNode));
+        -:   66:
+        5:   67:    if (newNode == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:   68:    {
+    #####:   69:        writeApplicationLog(
+call    0 never executed
+        -:   70:            "APPEND_HISTORY",
+        -:   71:            "Memory allocation failed"
+        -:   72:        );
+        -:   73:
+    #####:   74:        return 0;
+        -:   75:    }
+        -:   76:
+        5:   77:    newNode->data = *history;
+        5:   78:    newNode->next = NULL;
+        -:   79:
+        5:   80:    current = &app->historyHead;
+        -:   81:
+        5:   82:    while (*current != NULL)
+branch  0 taken 0%
+branch  1 taken 100% (fallthrough)
+        -:   83:    {
+    #####:   84:        current = &(*current)->next;
+        -:   85:    }
+        -:   86:
+        5:   87:    *current = newNode;
+        -:   88:
+        5:   89:    return 1;
+        -:   90:}
+        -:   91:
+function isValidComplaintRecord called 9 returned 100% blocks executed 93%
+        9:   92:static int isValidComplaintRecord(
+        -:   93:    const Complaint *complaint
+        -:   94:)
+        -:   95:{
+        9:   96:    if (complaint == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:   97:    {
+    #####:   98:        return 0;
+        -:   99:    }
+        -:  100:
+        9:  101:    if (complaint->complaintId == 0U)
+branch  0 taken 33% (fallthrough)
+branch  1 taken 67%
+        -:  102:    {
+        3:  103:        return 0;
+        -:  104:    }
+        -:  105:
+        6:  106:    if (complaint->category < CATEGORY_DAMAGED_PRODUCT ||
+branch  0 taken 83% (fallthrough)
+branch  1 taken 17%
+        5:  107:        complaint->category > CATEGORY_OTHER)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  108:    {
+        1:  109:        return 0;
+        -:  110:    }
+        -:  111:
+        5:  112:    if (complaint->priority < PRIORITY_LOW ||
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  113:        complaint->priority > PRIORITY_CRITICAL)
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        -:  114:    {
+        1:  115:        return 0;
+        -:  116:    }
+        -:  117:
+        4:  118:    if (complaint->status < STATUS_OPEN ||
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        4:  119:        complaint->status > STATUS_CLOSED)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  120:    {
+        2:  121:        return 0;
+        -:  122:    }
+        -:  123:
+        2:  124:    return 1;
+        -:  125:}
+        -:  126:
+function saveComplaintUpdate called 6 returned 100% blocks executed 72%
+        6:  127:static int saveComplaintUpdate(
+        -:  128:    ApplicationContext *app,
+        -:  129:    ComplaintNode *node,
+        -:  130:    const char *historyAction,
+        -:  131:    const char *historyDetails,
+        -:  132:    const char *auditAction
+        -:  133:)
+        -:  134:{
+        6:  135:    if (app == NULL ||
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+        6:  136:        node == NULL ||
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        6:  137:        historyAction == NULL ||
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        6:  138:        historyDetails == NULL ||
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  139:        auditAction == NULL)
+        -:  140:    {
+    #####:  141:        return 0;
+        -:  142:    }
+        -:  143:
+        6:  144:    getCurrentTimestamp(
+        6:  145:        node->data.updatedAt,
+call    0 returned 100%
+        -:  146:        sizeof(node->data.updatedAt)
+        -:  147:    );
+        -:  148:
+        6:  149:    if (!saveComplaints(app))
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  150:    {
+    #####:  151:        writeApplicationLog(
+call    0 never executed
+        -:  152:            auditAction,
+        -:  153:            "Unable to save complaint changes"
+        -:  154:        );
+        -:  155:
+    #####:  156:        writeComplaintAuditLog(
+call    0 never executed
+        -:  157:            "ADMIN",
+        -:  158:            auditAction,
+        -:  159:            node->data.complaintId,
+        -:  160:            "FAILED"
+        -:  161:        );
+        -:  162:
+    #####:  163:        return 0;
+        -:  164:    }
+        -:  165:
+        6:  166:    if (!addComplaintHistory(
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  167:            app,
+        -:  168:            node->data.complaintId,
+        -:  169:            historyAction,
+        -:  170:            historyDetails
+        -:  171:        ))
+        -:  172:    {
+    #####:  173:        writeApplicationLog(
+call    0 never executed
+        -:  174:            auditAction,
+        -:  175:            "Complaint updated but history could not be saved"
+        -:  176:        );
+        -:  177:    }
+        -:  178:
+        6:  179:    writeComplaintAuditLog(
+call    0 returned 100%
+        -:  180:        "ADMIN",
+        -:  181:        auditAction,
+        -:  182:        node->data.complaintId,
+        -:  183:        "SUCCESS"
+        -:  184:    );
+        -:  185:
+        6:  186:    return 1;
+        -:  187:}
+        -:  188:
+        -:  189:/* =========================================================
+        -:  190: * ADMIN AUTHENTICATION
+        -:  191: * ========================================================= */
+        -:  192:
+function authenticateAdmin called 3 returned 100% blocks executed 100%
+        3:  193:int authenticateAdmin(
+        -:  194:    const char *username,
+        -:  195:    const char *password
+        -:  196:)
+        -:  197:{
+        3:  198:    if (username == NULL || password == NULL)
+branch  0 taken 67% (fallthrough)
+branch  1 taken 33%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+        -:  199:    {
+        1:  200:        return 0;
+        -:  201:    }
+        -:  202:
+        3:  203:    return strcmp(username, ADMIN_USERNAME) == 0 &&
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        1:  204:           strcmp(password, ADMIN_PASSWORD) == 0;
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  205:}
+        -:  206:
+        -:  207:/* =========================================================
+        -:  208: * STATUS WORKFLOW
+        -:  209: * ========================================================= */
+        -:  210:
+function isValidStatusTransition called 10 returned 100% blocks executed 91%
+       10:  211:int isValidStatusTransition(
+        -:  212:    ComplaintStatus currentStatus,
+        -:  213:    ComplaintStatus newStatus
+        -:  214:)
+        -:  215:{
+       10:  216:    if (currentStatus == STATUS_OPEN)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  217:    {
+        5:  218:        return newStatus == STATUS_IN_PROGRESS ||
+branch  0 taken 60% (fallthrough)
+branch  1 taken 40%
+branch  2 taken 33% (fallthrough)
+branch  3 taken 67%
+        -:  219:               newStatus == STATUS_ESCALATED;
+        -:  220:    }
+        -:  221:
+        5:  222:    if (currentStatus == STATUS_IN_PROGRESS)
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        -:  223:    {
+       1*:  224:        return newStatus == STATUS_ESCALATED ||
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+        -:  225:               newStatus == STATUS_RESOLVED;
+        -:  226:    }
+        -:  227:
+        4:  228:    if (currentStatus == STATUS_ESCALATED)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  229:    {
+       2*:  230:        return newStatus == STATUS_IN_PROGRESS ||
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+        -:  231:               newStatus == STATUS_RESOLVED;
+        -:  232:    }
+        -:  233:
+        2:  234:    if (currentStatus == STATUS_RESOLVED)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  235:    {
+        1:  236:        return newStatus == STATUS_CLOSED;
+        -:  237:    }
+        -:  238:
+        1:  239:    return 0;
+        -:  240:}
+        -:  241:
+function updateComplaintPriority called 5 returned 100% blocks executed 100%
+        5:  242:int updateComplaintPriority(
+        -:  243:    ApplicationContext *app,
+        -:  244:    unsigned int complaintId,
+        -:  245:    ComplaintPriority newPriority
+        -:  246:)
+        -:  247:{
+        -:  248:    ComplaintNode *node;
+        -:  249:
+        5:  250:    if (app == NULL ||
+branch  0 taken 80% (fallthrough)
+branch  1 taken 20%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+        4:  251:        newPriority < PRIORITY_LOW ||
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  252:        newPriority > PRIORITY_CRITICAL)
+        -:  253:    {
+        2:  254:        return 0;
+        -:  255:    }
+        -:  256:
+        3:  257:    node = findComplaintById(
+call    0 returned 100%
+        -:  258:        app,
+        -:  259:        complaintId
+        -:  260:    );
+        -:  261:
+        3:  262:    if (node == NULL ||
+branch  0 taken 67% (fallthrough)
+branch  1 taken 33%
+        2:  263:        node->data.status == STATUS_CLOSED)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  264:    {
+        2:  265:        return 0;
+        -:  266:    }
+        -:  267:
+        1:  268:    node->data.priority = newPriority;
+        -:  269:
+        1:  270:    return saveComplaintUpdate(
+call    0 returned 100%
+call    1 returned 100%
+        -:  271:        app,
+        -:  272:        node,
+        -:  273:        "Priority Updated",
+        -:  274:        getPriorityText(newPriority),
+        -:  275:        "PRIORITY_UPDATE"
+        -:  276:    );
+        -:  277:}
+        -:  278:
+function updateComplaintStatus called 5 returned 100% blocks executed 100%
+        5:  279:int updateComplaintStatus(
+        -:  280:    ApplicationContext *app,
+        -:  281:    unsigned int complaintId,
+        -:  282:    ComplaintStatus newStatus
+        -:  283:)
+        -:  284:{
+        -:  285:    ComplaintNode *node;
+        -:  286:
+        5:  287:    if (app == NULL)
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        -:  288:    {
+        1:  289:        return 0;
+        -:  290:    }
+        -:  291:
+        4:  292:    node = findComplaintById(
+call    0 returned 100%
+        -:  293:        app,
+        -:  294:        complaintId
+        -:  295:    );
+        -:  296:
+        4:  297:    if (node == NULL)
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  298:    {
+        1:  299:        return 0;
+        -:  300:    }
+        -:  301:
+        3:  302:    if (!isValidStatusTransition(
+call    0 returned 100%
+branch  1 taken 33% (fallthrough)
+branch  2 taken 67%
+        -:  303:            node->data.status,
+        -:  304:            newStatus
+        -:  305:        ))
+        -:  306:    {
+        1:  307:        writeComplaintAuditLog(
+call    0 returned 100%
+        -:  308:            "ADMIN",
+        -:  309:            "STATUS_UPDATE",
+        -:  310:            complaintId,
+        -:  311:            "INVALID_TRANSITION"
+        -:  312:        );
+        -:  313:
+        1:  314:        return 0;
+        -:  315:    }
+        -:  316:
+        -:  317:    /*
+        -:  318:     * Resolution and closure require additional
+        -:  319:     * information, so they use separate functions.
+        -:  320:     */
+        2:  321:    if (newStatus == STATUS_RESOLVED ||
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+        -:  322:        newStatus == STATUS_CLOSED)
+        -:  323:    {
+        1:  324:        return 0;
+        -:  325:    }
+        -:  326:
+        1:  327:    node->data.status = newStatus;
+        -:  328:
+        1:  329:    return saveComplaintUpdate(
+call    0 returned 100%
+call    1 returned 100%
+        -:  330:        app,
+        -:  331:        node,
+        -:  332:        "Status Updated",
+        -:  333:        getStatusText(newStatus),
+        -:  334:        "STATUS_UPDATE"
+        -:  335:    );
+        -:  336:}
+        -:  337:
+function addAdminRemark called 6 returned 100% blocks executed 100%
+        6:  338:int addAdminRemark(
+        -:  339:    ApplicationContext *app,
+        -:  340:    unsigned int complaintId,
+        -:  341:    const char *remark
+        -:  342:)
+        -:  343:{
+        -:  344:    ComplaintNode *node;
+        -:  345:
+        6:  346:    if (app == NULL ||
+branch  0 taken 83% (fallthrough)
+branch  1 taken 17%
+branch  2 taken 80% (fallthrough)
+branch  3 taken 20%
+        4:  347:        remark == NULL ||
+        4:  348:        remark[0] == '\0')
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  349:    {
+        3:  350:        return 0;
+        -:  351:    }
+        -:  352:
+        3:  353:    node = findComplaintById(
+call    0 returned 100%
+        -:  354:        app,
+        -:  355:        complaintId
+        -:  356:    );
+        -:  357:
+        3:  358:    if (node == NULL ||
+branch  0 taken 67% (fallthrough)
+branch  1 taken 33%
+        2:  359:        node->data.status == STATUS_CLOSED)
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  360:    {
+        2:  361:        return 0;
+        -:  362:    }
+        -:  363:
+        1:  364:    (void)snprintf(
+        1:  365:        node->data.adminRemark,
+        -:  366:        sizeof(node->data.adminRemark),
+        -:  367:        "%s",
+        -:  368:        remark
+        -:  369:    );
+        -:  370:
+        1:  371:    return saveComplaintUpdate(
+call    0 returned 100%
+        -:  372:        app,
+        -:  373:        node,
+        -:  374:        "Remark Added",
+        -:  375:        remark,
+        -:  376:        "REMARK_ADDED"
+        -:  377:    );
+        -:  378:}
+        -:  379:
+function escalateComplaint called 8 returned 100% blocks executed 100%
+        8:  380:int escalateComplaint(
+        -:  381:    ApplicationContext *app,
+        -:  382:    unsigned int complaintId,
+        -:  383:    unsigned int escalationLevel,
+        -:  384:    const char *reason
+        -:  385:)
+        -:  386:{
+        -:  387:    ComplaintNode *node;
+        -:  388:
+        8:  389:    if (app == NULL ||
+branch  0 taken 88% (fallthrough)
+branch  1 taken 12%
+branch  2 taken 86% (fallthrough)
+branch  3 taken 14%
+        6:  390:        reason == NULL ||
+        6:  391:        reason[0] == '\0' ||
+branch  0 taken 83% (fallthrough)
+branch  1 taken 17%
+branch  2 taken 80% (fallthrough)
+branch  3 taken 20%
+        4:  392:        escalationLevel < 1U ||
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  393:        escalationLevel > 3U)
+        -:  394:    {
+        5:  395:        return 0;
+        -:  396:    }
+        -:  397:
+        3:  398:    node = findComplaintById(
+call    0 returned 100%
+        -:  399:        app,
+        -:  400:        complaintId
+        -:  401:    );
+        -:  402:
+        3:  403:    if (node == NULL ||
+branch  0 taken 67% (fallthrough)
+branch  1 taken 33%
+        2:  404:        node->data.status == STATUS_RESOLVED ||
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        1:  405:        node->data.status == STATUS_CLOSED)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  406:    {
+        2:  407:        return 0;
+        -:  408:    }
+        -:  409:
+        1:  410:    node->data.status = STATUS_ESCALATED;
+        1:  411:    node->data.escalationLevel = escalationLevel;
+        -:  412:
+        1:  413:    if (node->data.priority < PRIORITY_HIGH)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  414:    {
+        1:  415:        node->data.priority = PRIORITY_HIGH;
+        -:  416:    }
+        -:  417:
+        1:  418:    (void)snprintf(
+        1:  419:        node->data.escalationReason,
+        -:  420:        sizeof(node->data.escalationReason),
+        -:  421:        "%s",
+        -:  422:        reason
+        -:  423:    );
+        -:  424:
+        1:  425:    return saveComplaintUpdate(
+call    0 returned 100%
+        -:  426:        app,
+        -:  427:        node,
+        -:  428:        "Escalated",
+        -:  429:        reason,
+        -:  430:        "COMPLAINT_ESCALATED"
+        -:  431:    );
+        -:  432:}
+        -:  433:
+function resolveComplaint called 6 returned 100% blocks executed 100%
+        6:  434:int resolveComplaint(
+        -:  435:    ApplicationContext *app,
+        -:  436:    unsigned int complaintId,
+        -:  437:    const char *resolution
+        -:  438:)
+        -:  439:{
+        -:  440:    ComplaintNode *node;
+        -:  441:
+        6:  442:    if (app == NULL ||
+branch  0 taken 83% (fallthrough)
+branch  1 taken 17%
+branch  2 taken 80% (fallthrough)
+branch  3 taken 20%
+        4:  443:        resolution == NULL ||
+        4:  444:        resolution[0] == '\0')
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  445:    {
+        3:  446:        return 0;
+        -:  447:    }
+        -:  448:
+        3:  449:    node = findComplaintById(
+call    0 returned 100%
+        -:  450:        app,
+        -:  451:        complaintId
+        -:  452:    );
+        -:  453:
+        3:  454:    if (node == NULL)
+branch  0 taken 33% (fallthrough)
+branch  1 taken 67%
+        -:  455:    {
+        1:  456:        return 0;
+        -:  457:    }
+        -:  458:
+        2:  459:    if (node->data.status != STATUS_IN_PROGRESS &&
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        1:  460:        node->data.status != STATUS_ESCALATED)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  461:    {
+        1:  462:        return 0;
+        -:  463:    }
+        -:  464:
+        1:  465:    (void)snprintf(
+        1:  466:        node->data.resolution,
+        -:  467:        sizeof(node->data.resolution),
+        -:  468:        "%s",
+        -:  469:        resolution
+        -:  470:    );
+        -:  471:
+        1:  472:    node->data.status = STATUS_RESOLVED;
+        -:  473:
+        1:  474:    getCurrentTimestamp(
+        1:  475:        node->data.resolvedAt,
+call    0 returned 100%
+        -:  476:        sizeof(node->data.resolvedAt)
+        -:  477:    );
+        -:  478:
+        1:  479:    return saveComplaintUpdate(
+call    0 returned 100%
+        -:  480:        app,
+        -:  481:        node,
+        -:  482:        "Resolved",
+        -:  483:        resolution,
+        -:  484:        "COMPLAINT_RESOLVED"
+        -:  485:    );
+        -:  486:}
+        -:  487:
+function closeComplaint called 5 returned 100% blocks executed 100%
+        5:  488:int closeComplaint(
+        -:  489:    ApplicationContext *app,
+        -:  490:    unsigned int complaintId
+        -:  491:)
+        -:  492:{
+        -:  493:    ComplaintNode *node;
+        -:  494:
+        5:  495:    if (app == NULL)
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        -:  496:    {
+        1:  497:        return 0;
+        -:  498:    }
+        -:  499:
+        4:  500:    node = findComplaintById(
+call    0 returned 100%
+        -:  501:        app,
+        -:  502:        complaintId
+        -:  503:    );
+        -:  504:
+        4:  505:    if (node == NULL ||
+branch  0 taken 75% (fallthrough)
+branch  1 taken 25%
+        3:  506:        node->data.status != STATUS_RESOLVED ||
+branch  0 taken 67% (fallthrough)
+branch  1 taken 33%
+        2:  507:        node->data.resolution[0] == '\0')
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  508:    {
+        3:  509:        return 0;
+        -:  510:    }
+        -:  511:
+        1:  512:    node->data.status = STATUS_CLOSED;
+        -:  513:
+        1:  514:    getCurrentTimestamp(
+        1:  515:        node->data.closedAt,
+call    0 returned 100%
+        -:  516:        sizeof(node->data.closedAt)
+        -:  517:    );
+        -:  518:
+        1:  519:    return saveComplaintUpdate(
+call    0 returned 100%
+        -:  520:        app,
+        -:  521:        node,
+        -:  522:        "Closed",
+        -:  523:        "Complaint lifecycle completed",
+        -:  524:        "COMPLAINT_CLOSED"
+        -:  525:    );
+        -:  526:}
+        -:  527:
+        -:  528:/* =========================================================
+        -:  529: * COMPLAINT HISTORY
+        -:  530: * ========================================================= */
+        -:  531:
+function addComplaintHistory called 11 returned 100% blocks executed 74%
+       11:  532:int addComplaintHistory(
+        -:  533:    ApplicationContext *app,
+        -:  534:    unsigned int complaintId,
+        -:  535:    const char *action,
+        -:  536:    const char *details
+        -:  537:)
+        -:  538:{
+        -:  539:    HistoryNode *newNode;
+        -:  540:    HistoryNode **current;
+        -:  541:
+       11:  542:    if (app == NULL ||
+branch  0 taken 91% (fallthrough)
+branch  1 taken 9%
+branch  2 taken 90% (fallthrough)
+branch  3 taken 10%
+        9:  543:        action == NULL ||
+branch  0 taken 11% (fallthrough)
+branch  1 taken 89%
+        -:  544:        details == NULL)
+        -:  545:    {
+        3:  546:        return 0;
+        -:  547:    }
+        -:  548:
+        8:  549:    newNode = (HistoryNode *)calloc(
+        -:  550:        1U,
+        -:  551:        sizeof(*newNode)
+        -:  552:    );
+        -:  553:
+        8:  554:    if (newNode == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  555:    {
+    #####:  556:        writeApplicationLog(
+call    0 never executed
+        -:  557:            "ADD_HISTORY",
+        -:  558:            "Memory allocation failed"
+        -:  559:        );
+        -:  560:
+    #####:  561:        return 0;
+        -:  562:    }
+        -:  563:
+        8:  564:    app->counters.lastHistoryId++;
+        -:  565:
+        8:  566:    newNode->data.historyId =
+        8:  567:        app->counters.lastHistoryId;
+        -:  568:
+        8:  569:    newNode->data.complaintId =
+        -:  570:        complaintId;
+        -:  571:
+        8:  572:    (void)snprintf(
+        8:  573:        newNode->data.action,
+        -:  574:        sizeof(newNode->data.action),
+        -:  575:        "%s",
+        -:  576:        action
+        -:  577:    );
+        -:  578:
+        8:  579:    (void)snprintf(
+        8:  580:        newNode->data.details,
+        -:  581:        sizeof(newNode->data.details),
+        -:  582:        "%s",
+        -:  583:        details
+        -:  584:    );
+        -:  585:
+        8:  586:    getCurrentTimestamp(
+        8:  587:        newNode->data.timestamp,
+call    0 returned 100%
+        -:  588:        sizeof(newNode->data.timestamp)
+        -:  589:    );
+        -:  590:
+        8:  591:    current = &app->historyHead;
+        -:  592:
+        8:  593:    while (*current != NULL)
+branch  0 taken 0%
+branch  1 taken 100% (fallthrough)
+        -:  594:    {
+    #####:  595:        current = &(*current)->next;
+        -:  596:    }
+        -:  597:
+        8:  598:    *current = newNode;
+        -:  599:
+       16:  600:    if (!saveHistory(app) ||
+call    0 returned 100%
+branch  1 taken 100% (fallthrough)
+branch  2 taken 0%
+branch  3 taken 0% (fallthrough)
+branch  4 taken 100%
+        8:  601:        !saveCounters(app))
+call    0 returned 100%
+        -:  602:    {
+    #####:  603:        writeApplicationLog(
+call    0 never executed
+        -:  604:            "ADD_HISTORY",
+        -:  605:            "Unable to save history record"
+        -:  606:        );
+        -:  607:
+    #####:  608:        return 0;
+        -:  609:    }
+        -:  610:
+        8:  611:    return 1;
+        -:  612:}
+        -:  613:
+function displayComplaintHistory called 4 returned 100% blocks executed 100%
+        4:  614:void displayComplaintHistory(
+        -:  615:    const ApplicationContext *app,
+        -:  616:    unsigned int complaintId
+        -:  617:)
+        -:  618:{
+        -:  619:    const HistoryNode *current;
+        -:  620:    int found;
+        -:  621:
+        4:  622:    if (app == NULL)
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  623:    {
+        1:  624:        return;
+        -:  625:    }
+        -:  626:
+        3:  627:    found = 0;
+        3:  628:    current = app->historyHead;
+        -:  629:
+        3:  630:    puts(
+call    0 returned 100%
+        -:  631:        "\n========== COMPLAINT HISTORY =========="
+        -:  632:    );
+        -:  633:
+        5:  634:    while (current != NULL)
+branch  0 taken 40%
+branch  1 taken 60% (fallthrough)
+        -:  635:    {
+        2:  636:        if (current->data.complaintId ==
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  637:            complaintId)
+        -:  638:        {
+        1:  639:            found = 1;
+        -:  640:
+        1:  641:            printf(
+        -:  642:                "[%s] %s: %s\n",
+        1:  643:                current->data.timestamp,
+        1:  644:                current->data.action,
+        1:  645:                current->data.details
+call    0 returned 100%
+        -:  646:            );
+        -:  647:        }
+        -:  648:
+        2:  649:        current = current->next;
+        -:  650:    }
+        -:  651:
+        3:  652:    if (!found)
+branch  0 taken 67% (fallthrough)
+branch  1 taken 33%
+        -:  653:    {
+        2:  654:        puts(
+call    0 returned 100%
+        -:  655:            "No history is available "
+        -:  656:            "for this Complaint ID."
+        -:  657:        );
+        -:  658:    }
+        -:  659:}
+        -:  660:
+        -:  661:/* =========================================================
+        -:  662: * SUMMARY REPORT
+        -:  663: * ========================================================= */
+        -:  664:
+function generateSummaryReport called 4 returned 100% blocks executed 100%
+        4:  665:void generateSummaryReport(
+        -:  666:    const ApplicationContext *app
+        -:  667:)
+        -:  668:{
+        4:  669:    int statusCount[6] = {0};
+        4:  670:    int priorityCount[5] = {0};
+        4:  671:    int categoryCount[10] = {0};
+        -:  672:
+        -:  673:    int total;
+        -:  674:    int pendingCount;
+        -:  675:    int completedCount;
+        -:  676:    int pendingHighCount;
+        -:  677:    int pendingCriticalCount;
+        -:  678:    int index;
+        -:  679:
+        -:  680:    const ComplaintNode *current;
+        -:  681:
+        4:  682:    if (app == NULL)
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:  683:    {
+        1:  684:        return;
+        -:  685:    }
+        -:  686:
+        3:  687:    total = 0;
+        3:  688:    pendingCount = 0;
+        3:  689:    completedCount = 0;
+        3:  690:    pendingHighCount = 0;
+        3:  691:    pendingCriticalCount = 0;
+        -:  692:
+        3:  693:    current = app->complaintHead;
+        -:  694:
+        7:  695:    while (current != NULL)
+branch  0 taken 57%
+branch  1 taken 43% (fallthrough)
+        -:  696:    {
+        4:  697:        total++;
+        -:  698:
+        4:  699:        if (current->data.status >= STATUS_OPEN &&
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        4:  700:            current->data.status <= STATUS_CLOSED)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  701:        {
+        4:  702:            statusCount[current->data.status]++;
+        -:  703:        }
+        -:  704:
+        4:  705:        if (current->data.priority >= PRIORITY_LOW &&
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        4:  706:            current->data.priority <= PRIORITY_CRITICAL)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  707:        {
+        4:  708:            priorityCount[current->data.priority]++;
+        -:  709:        }
+        -:  710:
+        4:  711:        if (current->data.category >=
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        4:  712:                CATEGORY_DAMAGED_PRODUCT &&
+        4:  713:            current->data.category <=
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  714:                CATEGORY_OTHER)
+        -:  715:        {
+        4:  716:            categoryCount[current->data.category]++;
+        -:  717:        }
+        -:  718:
+        4:  719:        if (current->data.status == STATUS_OPEN ||
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        2:  720:            current->data.status == STATUS_IN_PROGRESS ||
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        2:  721:            current->data.status == STATUS_ESCALATED)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  722:        {
+        2:  723:            pendingCount++;
+        -:  724:
+        2:  725:            if (current->data.priority ==
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  726:                PRIORITY_HIGH)
+        -:  727:            {
+        1:  728:                pendingHighCount++;
+        -:  729:            }
+        -:  730:
+        2:  731:            if (current->data.priority ==
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  732:                PRIORITY_CRITICAL)
+        -:  733:            {
+        1:  734:                pendingCriticalCount++;
+        -:  735:            }
+        -:  736:        }
+        -:  737:        else
+        -:  738:        {
+        2:  739:            completedCount++;
+        -:  740:        }
+        -:  741:
+        4:  742:        current = current->next;
+        -:  743:    }
+        -:  744:
+        3:  745:    puts("\n========== SUMMARY REPORT ==========");
+call    0 returned 100%
+        -:  746:
+        3:  747:    printf(
+call    0 returned 100%
+        -:  748:        "Total Complaints       : %d\n",
+        -:  749:        total
+        -:  750:    );
+        -:  751:
+        3:  752:    printf(
+call    0 returned 100%
+        -:  753:        "Pending Complaints     : %d\n",
+        -:  754:        pendingCount
+        -:  755:    );
+        -:  756:
+        3:  757:    printf(
+call    0 returned 100%
+        -:  758:        "Completed Complaints   : %d\n",
+        -:  759:        completedCount
+        -:  760:    );
+        -:  761:
+        3:  762:    printf(
+call    0 returned 100%
+        -:  763:        "Pending High Priority  : %d\n",
+        -:  764:        pendingHighCount
+        -:  765:    );
+        -:  766:
+        3:  767:    printf(
+call    0 returned 100%
+        -:  768:        "Pending Critical       : %d\n",
+        -:  769:        pendingCriticalCount
+        -:  770:    );
+        -:  771:
+        3:  772:    puts("\nBy Status");
+call    0 returned 100%
+        -:  773:
+        3:  774:    for (index = STATUS_OPEN;
+       18:  775:         index <= STATUS_CLOSED;
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+       15:  776:         index++)
+        -:  777:    {
+       15:  778:        printf(
+call    0 returned 100%
+call    1 returned 100%
+        -:  779:            "%-14s : %d\n",
+        -:  780:            getStatusText(
+        -:  781:                (ComplaintStatus)index
+        -:  782:            ),
+        -:  783:            statusCount[index]
+        -:  784:        );
+        -:  785:    }
+        -:  786:
+        3:  787:    puts("\nBy Priority");
+call    0 returned 100%
+        -:  788:
+        3:  789:    for (index = PRIORITY_LOW;
+       15:  790:         index <= PRIORITY_CRITICAL;
+branch  0 taken 80%
+branch  1 taken 20% (fallthrough)
+       12:  791:         index++)
+        -:  792:    {
+       12:  793:        printf(
+call    0 returned 100%
+call    1 returned 100%
+        -:  794:            "%-14s : %d\n",
+        -:  795:            getPriorityText(
+        -:  796:                (ComplaintPriority)index
+        -:  797:            ),
+        -:  798:            priorityCount[index]
+        -:  799:        );
+        -:  800:    }
+        -:  801:
+        3:  802:    puts("\nBy Category");
+call    0 returned 100%
+        -:  803:
+        3:  804:    for (index = CATEGORY_DAMAGED_PRODUCT;
+       30:  805:         index <= CATEGORY_OTHER;
+branch  0 taken 90%
+branch  1 taken 10% (fallthrough)
+       27:  806:         index++)
+        -:  807:    {
+       27:  808:        printf(
+call    0 returned 100%
+call    1 returned 100%
+        -:  809:            "%-22s : %d\n",
+        -:  810:            getCategoryText(
+        -:  811:                (ComplaintCategory)index
+        -:  812:            ),
+        -:  813:            categoryCount[index]
+        -:  814:        );
+        -:  815:    }
+        -:  816:}
+        -:  817:
+        -:  818:/* =========================================================
+        -:  819: * APPLICATION INITIALIZATION
+        -:  820: * ========================================================= */
+        -:  821:
+function initializeApplication called 10 returned 100% blocks executed 84%
+       10:  822:int initializeApplication(
+        -:  823:    ApplicationContext *app
+        -:  824:)
+        -:  825:{
+        -:  826:    FILE *file;
+        -:  827:    Complaint complaint;
+        -:  828:    ComplaintHistory history;
+        -:  829:
+       10:  830:    if (app == NULL)
+branch  0 taken 10% (fallthrough)
+branch  1 taken 90%
+        -:  831:    {
+        1:  832:        return 0;
+        -:  833:    }
+        -:  834:
+        9:  835:    (void)memset(
+        -:  836:        app,
+        -:  837:        0,
+        -:  838:        sizeof(*app)
+        -:  839:    );
+        -:  840:
+        -:  841:    /*
+        -:  842:     * Load ID counters.
+        -:  843:     */
+        9:  844:    file = fopen(COUNTER_FILE, "rb");
+call    0 returned 100%
+        -:  845:
+        9:  846:    if (file != NULL)
+branch  0 taken 89% (fallthrough)
+branch  1 taken 11%
+        -:  847:    {
+        8:  848:        if (fread(
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        8:  849:                &app->counters,
+call    0 returned 100%
+        -:  850:                sizeof(app->counters),
+        -:  851:                1U,
+        -:  852:                file
+        -:  853:            ) != 1U)
+        -:  854:        {
+        4:  855:            app->counters.lastComplaintId =
+        -:  856:                1000U;
+        -:  857:
+        4:  858:            app->counters.lastHistoryId =
+        -:  859:                0U;
+        -:  860:        }
+        -:  861:
+        8:  862:        (void)fclose(file);
+call    0 returned 100%
+        -:  863:    }
+        -:  864:    else
+        -:  865:    {
+        1:  866:        app->counters.lastComplaintId =
+        -:  867:            1000U;
+        -:  868:
+        1:  869:        app->counters.lastHistoryId =
+        -:  870:            0U;
+        -:  871:    }
+        -:  872:
+        -:  873:    /*
+        -:  874:     * Load complaint records.
+        -:  875:     */
+        9:  876:    file = fopen(COMPLAINT_FILE, "rb");
+call    0 returned 100%
+        -:  877:
+        9:  878:    if (file != NULL)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  879:    {
+       18:  880:        while (fread(
+call    0 returned 100%
+        -:  881:                   &complaint,
+        -:  882:                   sizeof(complaint),
+        -:  883:                   1U,
+        -:  884:                   file
+       18:  885:               ) == 1U)
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+        -:  886:        {
+        9:  887:            if (!isValidComplaintRecord(
+call    0 returned 100%
+branch  1 taken 78% (fallthrough)
+branch  2 taken 22%
+        -:  888:                    &complaint
+        -:  889:                ))
+        -:  890:            {
+        7:  891:                writeApplicationLog(
+call    0 returned 100%
+        -:  892:                    "LOAD_COMPLAINTS",
+        -:  893:                    "Invalid complaint record skipped"
+        -:  894:                );
+        -:  895:
+        7:  896:                continue;
+        -:  897:            }
+        -:  898:
+        2:  899:            if (!appendComplaintNode(
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  900:                    app,
+        -:  901:                    &complaint
+        -:  902:                ))
+        -:  903:            {
+    #####:  904:                (void)fclose(file);
+call    0 never executed
+    #####:  905:                freeApplicationData(app);
+call    0 never executed
+    #####:  906:                return 0;
+        -:  907:            }
+        -:  908:        }
+        -:  909:
+        9:  910:        if (ferror(file))
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  911:        {
+    #####:  912:            writeApplicationLog(
+call    0 never executed
+        -:  913:                "LOAD_COMPLAINTS",
+        -:  914:                "Error while reading complaint file"
+        -:  915:            );
+        -:  916:        }
+        -:  917:
+        9:  918:        (void)fclose(file);
+call    0 returned 100%
+        -:  919:    }
+        -:  920:
+        -:  921:    /*
+        -:  922:     * Load complaint-history records.
+        -:  923:     */
+        9:  924:    file = fopen(HISTORY_FILE, "rb");
+call    0 returned 100%
+        -:  925:
+        9:  926:    if (file != NULL)
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  927:    {
+       18:  928:        while (fread(
+call    0 returned 100%
+        -:  929:                   &history,
+        -:  930:                   sizeof(history),
+        -:  931:                   1U,
+        -:  932:                   file
+       18:  933:               ) == 1U)
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+        -:  934:        {
+        9:  935:            if (history.historyId == 0U ||
+branch  0 taken 56% (fallthrough)
+branch  1 taken 44%
+        5:  936:                history.complaintId == 0U)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  937:            {
+        4:  938:                writeApplicationLog(
+call    0 returned 100%
+        -:  939:                    "LOAD_HISTORY",
+        -:  940:                    "Invalid history record skipped"
+        -:  941:                );
+        -:  942:
+        4:  943:                continue;
+        -:  944:            }
+        -:  945:
+        5:  946:            if (!appendHistoryNode(
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  947:                    app,
+        -:  948:                    &history
+        -:  949:                ))
+        -:  950:            {
+    #####:  951:                (void)fclose(file);
+call    0 never executed
+    #####:  952:                freeApplicationData(app);
+call    0 never executed
+    #####:  953:                return 0;
+        -:  954:            }
+        -:  955:        }
+        -:  956:
+        9:  957:        if (ferror(file))
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -:  958:        {
+    #####:  959:            writeApplicationLog(
+call    0 never executed
+        -:  960:                "LOAD_HISTORY",
+        -:  961:                "Error while reading history file"
+        -:  962:            );
+        -:  963:        }
+        -:  964:
+        9:  965:        (void)fclose(file);
+call    0 returned 100%
+        -:  966:    }
+        -:  967:
+        9:  968:    return 1;
+        -:  969:}
+        -:  970:
+        -:  971:/* =========================================================
+        -:  972: * FILE STORAGE
+        -:  973: * ========================================================= */
+        -:  974:
+function saveComplaints called 10 returned 100% blocks executed 65%
+       10:  975:int saveComplaints(
+        -:  976:    const ApplicationContext *app
+        -:  977:)
+        -:  978:{
+        -:  979:    FILE *file;
+        -:  980:    const ComplaintNode *current;
+        -:  981:
+       10:  982:    if (app == NULL)
+branch  0 taken 10% (fallthrough)
+branch  1 taken 90%
+        -:  983:    {
+        1:  984:        return 0;
+        -:  985:    }
+        -:  986:
+        9:  987:    file = fopen(
+call    0 returned 100%
+        -:  988:        COMPLAINT_FILE,
+        -:  989:        "wb"
+        -:  990:    );
+        -:  991:
+        9:  992:    if (file == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  993:    {
+    #####:  994:        writeApplicationLog(
+call    0 never executed
+        -:  995:            "SAVE_COMPLAINTS",
+        -:  996:            "Unable to open complaint file"
+        -:  997:        );
+        -:  998:
+    #####:  999:        return 0;
+        -: 1000:    }
+        -: 1001:
+        9: 1002:    current = app->complaintHead;
+        -: 1003:
+       19: 1004:    while (current != NULL)
+branch  0 taken 53%
+branch  1 taken 47% (fallthrough)
+        -: 1005:    {
+       10: 1006:        if (fwrite(
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+       10: 1007:                &current->data,
+call    0 returned 100%
+        -: 1008:                sizeof(current->data),
+        -: 1009:                1U,
+        -: 1010:                file
+        -: 1011:            ) != 1U)
+        -: 1012:        {
+    #####: 1013:            writeApplicationLog(
+call    0 never executed
+        -: 1014:                "SAVE_COMPLAINTS",
+        -: 1015:                "Unable to write complaint record"
+        -: 1016:            );
+        -: 1017:
+    #####: 1018:            (void)fclose(file);
+call    0 never executed
+    #####: 1019:            return 0;
+        -: 1020:        }
+        -: 1021:
+       10: 1022:        current = current->next;
+        -: 1023:    }
+        -: 1024:
+        9: 1025:    if (fclose(file) != 0)
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -: 1026:    {
+    #####: 1027:        writeApplicationLog(
+call    0 never executed
+        -: 1028:            "SAVE_COMPLAINTS",
+        -: 1029:            "Unable to close complaint file"
+        -: 1030:        );
+        -: 1031:
+    #####: 1032:        return 0;
+        -: 1033:    }
+        -: 1034:
+        9: 1035:    return 1;
+        -: 1036:}
+        -: 1037:
+function saveHistory called 11 returned 100% blocks executed 65%
+       11: 1038:int saveHistory(
+        -: 1039:    const ApplicationContext *app
+        -: 1040:)
+        -: 1041:{
+        -: 1042:    FILE *file;
+        -: 1043:    const HistoryNode *current;
+        -: 1044:
+       11: 1045:    if (app == NULL)
+branch  0 taken 9% (fallthrough)
+branch  1 taken 91%
+        -: 1046:    {
+        1: 1047:        return 0;
+        -: 1048:    }
+        -: 1049:
+       10: 1050:    file = fopen(
+call    0 returned 100%
+        -: 1051:        HISTORY_FILE,
+        -: 1052:        "wb"
+        -: 1053:    );
+        -: 1054:
+       10: 1055:    if (file == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -: 1056:    {
+    #####: 1057:        writeApplicationLog(
+call    0 never executed
+        -: 1058:            "SAVE_HISTORY",
+        -: 1059:            "Unable to open history file"
+        -: 1060:        );
+        -: 1061:
+    #####: 1062:        return 0;
+        -: 1063:    }
+        -: 1064:
+       10: 1065:    current = app->historyHead;
+        -: 1066:
+       21: 1067:    while (current != NULL)
+branch  0 taken 52%
+branch  1 taken 48% (fallthrough)
+        -: 1068:    {
+       11: 1069:        if (fwrite(
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+       11: 1070:                &current->data,
+call    0 returned 100%
+        -: 1071:                sizeof(current->data),
+        -: 1072:                1U,
+        -: 1073:                file
+        -: 1074:            ) != 1U)
+        -: 1075:        {
+    #####: 1076:            writeApplicationLog(
+call    0 never executed
+        -: 1077:                "SAVE_HISTORY",
+        -: 1078:                "Unable to write history record"
+        -: 1079:            );
+        -: 1080:
+    #####: 1081:            (void)fclose(file);
+call    0 never executed
+    #####: 1082:            return 0;
+        -: 1083:        }
+        -: 1084:
+       11: 1085:        current = current->next;
+        -: 1086:    }
+        -: 1087:
+       10: 1088:    if (fclose(file) != 0)
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -: 1089:    {
+    #####: 1090:        writeApplicationLog(
+call    0 never executed
+        -: 1091:            "SAVE_HISTORY",
+        -: 1092:            "Unable to close history file"
+        -: 1093:        );
+        -: 1094:
+    #####: 1095:        return 0;
+        -: 1096:    }
+        -: 1097:
+       10: 1098:    return 1;
+        -: 1099:}
+        -: 1100:
+function saveCounters called 11 returned 100% blocks executed 59%
+       11: 1101:int saveCounters(
+        -: 1102:    const ApplicationContext *app
+        -: 1103:)
+        -: 1104:{
+        -: 1105:    FILE *file;
+        -: 1106:
+       11: 1107:    if (app == NULL)
+branch  0 taken 9% (fallthrough)
+branch  1 taken 91%
+        -: 1108:    {
+        1: 1109:        return 0;
+        -: 1110:    }
+        -: 1111:
+       10: 1112:    file = fopen(
+call    0 returned 100%
+        -: 1113:        COUNTER_FILE,
+        -: 1114:        "wb"
+        -: 1115:    );
+        -: 1116:
+       10: 1117:    if (file == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -: 1118:    {
+    #####: 1119:        writeApplicationLog(
+call    0 never executed
+        -: 1120:            "SAVE_COUNTERS",
+        -: 1121:            "Unable to open counter file"
+        -: 1122:        );
+        -: 1123:
+    #####: 1124:        return 0;
+        -: 1125:    }
+        -: 1126:
+       10: 1127:    if (fwrite(
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+       10: 1128:            &app->counters,
+call    0 returned 100%
+        -: 1129:            sizeof(app->counters),
+        -: 1130:            1U,
+        -: 1131:            file
+        -: 1132:        ) != 1U)
+        -: 1133:    {
+    #####: 1134:        writeApplicationLog(
+call    0 never executed
+        -: 1135:            "SAVE_COUNTERS",
+        -: 1136:            "Unable to write counter record"
+        -: 1137:        );
+        -: 1138:
+    #####: 1139:        (void)fclose(file);
+call    0 never executed
+    #####: 1140:        return 0;
+        -: 1141:    }
+        -: 1142:
+       10: 1143:    if (fclose(file) != 0)
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+        -: 1144:    {
+    #####: 1145:        writeApplicationLog(
+call    0 never executed
+        -: 1146:            "SAVE_COUNTERS",
+        -: 1147:            "Unable to close counter file"
+        -: 1148:        );
+        -: 1149:
+    #####: 1150:        return 0;
+        -: 1151:    }
+        -: 1152:
+       10: 1153:    return 1;
+        -: 1154:}
+        -: 1155:
+        -: 1156:/* =========================================================
+        -: 1157: * LOGGING
+        -: 1158: * ========================================================= */
+        -: 1159:
+function writeAuditLog called 11 returned 100% blocks executed 91%
+       11: 1160:void writeAuditLog(
+        -: 1161:    const char *action
+        -: 1162:)
+        -: 1163:{
+        -: 1164:    FILE *file;
+        -: 1165:    char timestamp[TIMESTAMP_LENGTH];
+        -: 1166:
+       11: 1167:    if (action == NULL)
+branch  0 taken 9% (fallthrough)
+branch  1 taken 91%
+        -: 1168:    {
+        1: 1169:        return;
+        -: 1170:    }
+        -: 1171:
+       10: 1172:    file = fopen(AUDIT_FILE, "a");
+call    0 returned 100%
+        -: 1173:
+       10: 1174:    if (file == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -: 1175:    {
+    #####: 1176:        return;
+        -: 1177:    }
+        -: 1178:
+       10: 1179:    getCurrentTimestamp(
+call    0 returned 100%
+        -: 1180:        timestamp,
+        -: 1181:        sizeof(timestamp)
+        -: 1182:    );
+        -: 1183:
+       10: 1184:    (void)fprintf(
+call    0 returned 100%
+        -: 1185:        file,
+        -: 1186:        "[%s] %s\n",
+        -: 1187:        timestamp,
+        -: 1188:        action
+        -: 1189:    );
+        -: 1190:
+       10: 1191:    (void)fclose(file);
+call    0 returned 100%
+        -: 1192:}
+        -: 1193:
+function writeComplaintAuditLog called 9 returned 100% blocks executed 100%
+        9: 1194:void writeComplaintAuditLog(
+        -: 1195:    const char *actor,
+        -: 1196:    const char *action,
+        -: 1197:    unsigned int complaintId,
+        -: 1198:    const char *result
+        -: 1199:)
+        -: 1200:{
+        -: 1201:    char message[250];
+        -: 1202:
+        9: 1203:    if (actor == NULL ||
+branch  0 taken 89% (fallthrough)
+branch  1 taken 11%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+        8: 1204:        action == NULL ||
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -: 1205:        result == NULL)
+        -: 1206:    {
+        1: 1207:        return;
+        -: 1208:    }
+        -: 1209:
+        8: 1210:    (void)snprintf(
+        -: 1211:        message,
+        -: 1212:        sizeof(message),
+        -: 1213:        "%s | %s | Complaint ID: %u | %s",
+        -: 1214:        actor,
+        -: 1215:        action,
+        -: 1216:        complaintId,
+        -: 1217:        result
+        -: 1218:    );
+        -: 1219:
+        8: 1220:    writeAuditLog(message);
+call    0 returned 100%
+        -: 1221:}
+        -: 1222:
+function writeApplicationLog called 13 returned 100% blocks executed 92%
+       13: 1223:void writeApplicationLog(
+        -: 1224:    const char *operation,
+        -: 1225:    const char *errorMessage
+        -: 1226:)
+        -: 1227:{
+        -: 1228:    FILE *file;
+        -: 1229:    char timestamp[TIMESTAMP_LENGTH];
+        -: 1230:
+       13: 1231:    if (operation == NULL ||
+branch  0 taken 92% (fallthrough)
+branch  1 taken 8%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+        -: 1232:        errorMessage == NULL)
+        -: 1233:    {
+        1: 1234:        return;
+        -: 1235:    }
+        -: 1236:
+       12: 1237:    file = fopen(
+call    0 returned 100%
+        -: 1238:        APPLICATION_LOG,
+        -: 1239:        "a"
+        -: 1240:    );
+        -: 1241:
+       12: 1242:    if (file == NULL)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -: 1243:    {
+    #####: 1244:        return;
+        -: 1245:    }
+        -: 1246:
+       12: 1247:    getCurrentTimestamp(
+call    0 returned 100%
+        -: 1248:        timestamp,
+        -: 1249:        sizeof(timestamp)
+        -: 1250:    );
+        -: 1251:
+       12: 1252:    (void)fprintf(
+call    0 returned 100%
+        -: 1253:        file,
+        -: 1254:        "[%s] ERROR | %s | %s\n",
+        -: 1255:        timestamp,
+        -: 1256:        operation,
+        -: 1257:        errorMessage
+        -: 1258:    );
+        -: 1259:
+       12: 1260:    (void)fclose(file);
+call    0 returned 100%
+        -: 1261:}
+        -: 1262:
+        -: 1263:/* =========================================================
+        -: 1264: * MEMORY CLEANUP
+        -: 1265: * ========================================================= */
+        -: 1266:
+function freeApplicationData called 12 returned 100% blocks executed 100%
+       12: 1267:void freeApplicationData(
+        -: 1268:    ApplicationContext *app
+        -: 1269:)
+        -: 1270:{
+        -: 1271:    ComplaintNode *complaintNode;
+        -: 1272:    HistoryNode *historyNode;
+        -: 1273:
+       12: 1274:    if (app == NULL)
+branch  0 taken 8% (fallthrough)
+branch  1 taken 92%
+        -: 1275:    {
+        1: 1276:        return;
+        -: 1277:    }
+        -: 1278:
+       16: 1279:    while (app->complaintHead != NULL)
+branch  0 taken 31%
+branch  1 taken 69% (fallthrough)
+        -: 1280:    {
+        5: 1281:        complaintNode =
+        -: 1282:            app->complaintHead;
+        -: 1283:
+        5: 1284:        app->complaintHead =
+        5: 1285:            complaintNode->next;
+        -: 1286:
+        5: 1287:        free(complaintNode);
+        -: 1288:    }
+        -: 1289:
+       17: 1290:    while (app->historyHead != NULL)
+branch  0 taken 35%
+branch  1 taken 65% (fallthrough)
+        -: 1291:    {
+        6: 1292:        historyNode =
+        -: 1293:            app->historyHead;
+        -: 1294:
+        6: 1295:        app->historyHead =
+        6: 1296:            historyNode->next;
+        -: 1297:
+        6: 1298:        free(historyNode);
+        -: 1299:    }
+        -: 1300:}

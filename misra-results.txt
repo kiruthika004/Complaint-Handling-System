@@ -1,0 +1,69 @@
+src/complaint_test.cpp:296:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen("input.txt", "r", stdin);
+    ^
+src/complaint_test.cpp:319:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen("input2.txt", "r", stdin);
+    ^
+src/complaint_test.cpp:347:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen("input3.txt", "r", stdin);
+    ^
+src/complaint_test.cpp:371:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen("int1.txt", "r", stdin);
+    ^
+src/complaint_test.cpp:395:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen("int2.txt", "r", stdin);
+    ^
+src/complaint_test.cpp:419:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen("int3.txt", "r", stdin);
+    ^
+src/complaint_test.cpp:440:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen("pause.txt", "r", stdin);
+    ^
+src/complaint_test.cpp:628:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen(
+    ^
+src/complaint_test.cpp:669:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen(
+    ^
+src/complaint_test.cpp:704:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen(
+    ^
+src/complaint_test.cpp:729:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen(
+    ^
+src/complaint_test.cpp:755:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen(
+    ^
+src/complaint_test.cpp:781:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen(
+    ^
+src/complaint_test.cpp:822:5: warning: Return value of function freopen() is not used. [ignoredReturnValue]
+    freopen(
+    ^
+src/complaint_test.cpp:1696:10: style: C-style pointer casting [cstyleCast]
+        (ComplaintNode *)
+         ^
+src/complaint_test.cpp:1700:10: style: C-style pointer casting [cstyleCast]
+        (HistoryNode *)
+         ^
+src/complaint_test.cpp:1884:10: style: C-style pointer casting [cstyleCast]
+        (ComplaintNode*)malloc(sizeof(ComplaintNode));
+         ^
+src/complaint_test.cpp:1886:10: style: C-style pointer casting [cstyleCast]
+        (ComplaintNode*)malloc(sizeof(ComplaintNode));
+         ^
+src/complaint_test.cpp:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1 [internalError]
+
+^
+src/main.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1 [internalError]
+
+^
+src/srcmodule1.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1 [internalError]
+
+^
+src/srcmodule2.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1 [internalError]
+
+^
+src/utils.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1 [internalError]
+
+^
