@@ -831,3 +831,279 @@ TEST(RegisterComplaintTest, SuccessfulRegistration)
 
     remove("register.txt");
 }
+//AUTHENTICATE_ADMIN
+TEST(AdminTest, ValidCredentials)
+{
+    EXPECT_EQ(
+        authenticateAdmin(
+            "admin",
+            "EcomAdmin@2026"
+        ),
+        1
+    );
+}
+
+TEST(AdminTest, NullUsername)
+{
+    EXPECT_EQ(
+        authenticateAdmin(
+            NULL,
+            "pass"
+        ),
+        0
+    );
+}
+
+TEST(AdminTest, InvalidCredentials)
+{
+    EXPECT_EQ(
+        authenticateAdmin(
+            "wrong",
+            "wrong"
+        ),
+        0
+    );
+}
+//is valid status transition
+TEST(StatusTransition, OpenToProgress)
+{
+    EXPECT_TRUE(
+        isValidStatusTransition(
+            STATUS_OPEN,
+            STATUS_IN_PROGRESS
+        )
+    );
+}
+
+TEST(StatusTransition, OpenToEscalated)
+{
+    EXPECT_TRUE(
+        isValidStatusTransition(
+            STATUS_OPEN,
+            STATUS_ESCALATED
+        )
+    );
+}
+
+TEST(StatusTransition, InvalidTransition)
+{
+    EXPECT_FALSE(
+        isValidStatusTransition(
+            STATUS_OPEN,
+            STATUS_CLOSED
+        )
+    );
+}
+//update complaint priority
+TEST(PriorityTest, NullApp)
+{
+    EXPECT_FALSE(
+        updateComplaintPriority(
+            NULL,
+            1,
+            PRIORITY_HIGH
+        )
+    );
+}
+TEST(PriorityTest, InvalidPriority)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        updateComplaintPriority(
+            &app,
+            1,
+            (ComplaintPriority)99
+        )
+    );
+}
+TEST(PriorityTest, ComplaintNotFound)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        updateComplaintPriority(
+            &app,
+            1001,
+            PRIORITY_HIGH
+        )
+    );
+}
+TEST(PriorityTest, ClosedComplaint)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_CLOSED;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        updateComplaintPriority(
+            &app,
+            1001,
+            PRIORITY_HIGH
+        )
+    );
+}
+//update complaint status
+TEST(StatusTest, NullApp)
+{
+    EXPECT_FALSE(
+        updateComplaintStatus(
+            NULL,
+            1001,
+            STATUS_IN_PROGRESS
+        )
+    );
+}
+TEST(StatusTest, ComplaintNotFound)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        updateComplaintStatus(
+            &app,
+            1001,
+            STATUS_IN_PROGRESS
+        )
+    );
+}
+TEST(StatusTest, InvalidTransition)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        updateComplaintStatus(
+            &app,
+            1001,
+            STATUS_CLOSED
+        )
+    );
+}
+TEST(StatusTest, ResolvedNotAllowedHere)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_IN_PROGRESS;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        updateComplaintStatus(
+            &app,
+            1001,
+            STATUS_RESOLVED
+        )
+    );
+}
+TEST(StatusTest, ValidTransitionSuccess)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+
+    app.complaintHead = &node;
+
+    EXPECT_TRUE(
+        updateComplaintStatus(
+            &app,
+            1001,
+            STATUS_IN_PROGRESS
+        )
+    );
+}
+//add admin mark
+TEST(RemarkTest, NullApp)
+{
+    EXPECT_FALSE(
+        addAdminRemark(
+            NULL,
+            1001,
+            "Remark"
+        )
+    );
+}
+TEST(RemarkTest, NullRemark)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        addAdminRemark(
+            &app,
+            1001,
+            NULL
+        )
+    );
+}
+TEST(RemarkTest, EmptyRemark)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        addAdminRemark(
+            &app,
+            1001,
+            ""
+        )
+    );
+}
+TEST(RemarkTest, ComplaintNotFound)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        addAdminRemark(
+            &app,
+            1001,
+            "Remark"
+        )
+    );
+}
+TEST(RemarkTest, ClosedComplaint)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_CLOSED;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        addAdminRemark(
+            &app,
+            1001,
+            "Remark"
+        )
+    );
+}
+TEST(RemarkTest, Success)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+
+    app.complaintHead = &node;
+
+    EXPECT_TRUE(
+        addAdminRemark(
+            &app,
+            1001,
+            "Checked"
+        )
+    );
+}

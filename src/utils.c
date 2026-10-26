@@ -12,9 +12,6 @@ void readLine(
     size_t bufferSize
 )
 {
-    size_t length;
-    int character;
-
     if (buffer == NULL || bufferSize == 0U)
     {
         return;
@@ -22,6 +19,8 @@ void readLine(
 
     while (1)
     {
+        size_t length;
+
         printf("%s", prompt);
 
         if (fgets(buffer, (int)bufferSize, stdin) == NULL)
@@ -39,6 +38,8 @@ void readLine(
         }
         else
         {
+            int character;
+
             while ((character = getchar()) != '\n' &&
                    character != EOF)
             {
@@ -63,10 +64,11 @@ int readInteger(
 {
     char input[64];
     char *endPointer;
-    long value;
 
     while (1)
     {
+        long value;
+
         readLine(prompt, input, sizeof(input));
 
         value = strtol(input, &endPointer, 10);
@@ -107,8 +109,8 @@ int validateEmail(const char *email)
 
     dotSymbol = strchr(atSymbol + 1, '.');
 
-    return dotSymbol != NULL &&
-           dotSymbol[1] != '\0';
+    return (dotSymbol != NULL &&
+            dotSymbol[1] != '\0');
 }
 
 int validatePhone(const char *phone)
@@ -146,7 +148,7 @@ void getCurrentTimestamp(
 {
     time_t currentTime;
     time_t istTime;
-    struct tm *istDateTime;
+    const struct tm *istDateTime;
     size_t result;
 
     if (buffer == NULL || bufferSize == 0U)
@@ -168,18 +170,16 @@ void getCurrentTimestamp(
     }
 
     /*
-     * Indian Standard Time is UTC + 05:30.
-     *
-     * 5 hours  = 5 * 60 * 60 seconds
-     * 30 mins  = 30 * 60 seconds
-     * Total    = 19800 seconds
+     * Indian Standard Time is UTC +05:30.
+     * Total offset = 19800 seconds.
      */
-    istTime = currentTime + (time_t)(5 * 60 * 60)
-                          + (time_t)(30 * 60);
+    istTime = currentTime +
+              (time_t)(5 * 60 * 60) +
+              (time_t)(30 * 60);
 
     /*
-     * gmtime() is used because the IST offset
-     * has already been added manually.
+     * gmtime() is used because the IST
+     * offset has already been added.
      */
     istDateTime = gmtime(&istTime);
 
@@ -212,15 +212,13 @@ void getCurrentTimestamp(
         return;
     }
 
-    /*
-     * Append the fixed IST timezone indicator.
-     */
     (void)snprintf(
         buffer + result,
         bufferSize - result,
         " +0530 IST"
     );
 }
+
 const char *getStatusText(
     ComplaintStatus status
 )
