@@ -30,34 +30,37 @@ static void customerMenu(ApplicationContext *app)
         puts("===================================");
         puts("1. Register Complaint");
         puts("2. Track Complaint");
-        puts("3. Back to Main Menu");
+        puts("3. Submit Feedback");
+        puts("4. Back to Main Menu");
 
         choice = readInteger(
             "Enter choice: ",
-            1,
-            3
+             1,
+             4
         );
 
-        switch (choice)
+        switch(choice)
         {
             case 1:
-                (void)registerComplaint(app);
-                pauseScreen();
-                break;
+               registerComplaint(app);
+               pauseScreen();
+               break;
 
             case 2:
-                (void)trackComplaint(app);
-                pauseScreen();
-                break;
+               trackComplaint(app);
+               pauseScreen();
+               break;
 
             case 3:
-                break;
+               submitFeedback(app);
+               pauseScreen();
+               break;
 
-            default:
-                break;
+            case 4:
+               break;
         }
     }
-    while (choice != 3);
+    while (choice != 4);
 }
 static int adminLogin(void)
 {
@@ -165,8 +168,12 @@ static void adminMenu(
         switch (choice)
         {
             case 1:
-                viewAllComplaints(app);
-                break;
+    (void)checkAndEscalateOverdueComplaints(
+        app
+    );
+
+    viewAllComplaints(app);
+    break;
 
             case 2:
                 complaintId =
@@ -395,8 +402,12 @@ static void adminMenu(
                 break;
 
             case 11:
-                generateSummaryReport(app);
-                break;
+    (void)checkAndEscalateOverdueComplaints(
+        app
+    );
+
+    generateSummaryReport(app);
+    break;
 
             case 12:
                 writeAuditLog(
@@ -430,7 +441,23 @@ int main(void)
 
         return 1;
     }
+    {
+    int escalatedCount;
 
+    escalatedCount =
+        checkAndEscalateOverdueComplaints(
+            &app
+        );
+
+    if (escalatedCount > 0)
+    {
+        printf(
+            "\n%d overdue complaint(s) "
+            "were automatically escalated.\n",
+            escalatedCount
+        );
+    }
+}
     writeAuditLog(
         "Application started"
     );

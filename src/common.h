@@ -2,13 +2,14 @@
 #define COMMON_H
 
 #include <stddef.h>
-
+#include <time.h>
+#define FEEDBACK_LENGTH 300
 #define COMPLAINT_FILE  "complaints.dat"
 #define HISTORY_FILE    "history.dat"
 #define COUNTER_FILE    "counters.dat"
 #define AUDIT_FILE      "audit.log"
 #define APPLICATION_LOG "application.log"
-
+#define AUTO_ESCALATION_TEST_SECONDS 60L
 #define ADMIN_USERNAME "admin"
 #define ADMIN_PASSWORD "EcomAdmin@2026"
 
@@ -26,7 +27,12 @@
 #define DESCRIPTION_LENGTH  500
 #define REMARK_LENGTH       300
 #define RESOLUTION_LENGTH   500
+#define SECONDS_PER_HOUR 3600L
 
+#define LOW_ESCALATION_HOURS       48L
+#define MEDIUM_ESCALATION_HOURS    24L
+#define HIGH_ESCALATION_HOURS       8L
+#define CRITICAL_ESCALATION_HOURS   2L
 /*
  * Increased to support:
  * YYYY-MM-DD HH:MM:SS +0530
@@ -84,11 +90,17 @@ typedef struct
     char escalationReason[REMARK_LENGTH];
     char adminRemark[REMARK_LENGTH];
     char resolution[RESOLUTION_LENGTH];
+    
+    char customerFeedback[FEEDBACK_LENGTH];
+    unsigned int customerRating;
 
     char createdAt[TIMESTAMP_LENGTH];
     char updatedAt[TIMESTAMP_LENGTH];
     char resolvedAt[TIMESTAMP_LENGTH];
     char closedAt[TIMESTAMP_LENGTH];
+    
+
+time_t statusUpdatedEpoch;
 } Complaint;
 
 typedef struct ComplaintNode

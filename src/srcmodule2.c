@@ -1,14 +1,18 @@
 #include <stdio.h>
+#include <time.h>
+#include "module2.h"
 #include <stdlib.h>
 #include <string.h>
 
 #include "module1.h"
-#include "module2.h"
 
+
+
+/* Private helper function declaration */
+static long getEscalationLimitSeconds(ComplaintPriority priority);
 /* =========================================================
  * INTERNAL HELPER FUNCTIONS
  * ========================================================= */
-
 static int appendComplaintNode(
     ApplicationContext *app,
     const Complaint *complaint
@@ -22,7 +26,7 @@ static int appendComplaintNode(
         return 0;
     }
 
-    newNode = (ComplaintNode *)malloc(sizeof(*newNode));
+    newNode = malloc(sizeof(*newNode));
 
     if (newNode == NULL)
     {
@@ -62,7 +66,7 @@ static int appendHistoryNode(
         return 0;
     }
 
-    newNode = (HistoryNode *)malloc(sizeof(*newNode));
+    newNode = malloc(sizeof(*newNode));
 
     if (newNode == NULL)
     {
@@ -185,7 +189,36 @@ static int saveComplaintUpdate(
 
     return 1;
 }
+static long getEscalationLimitSeconds(
+    ComplaintPriority priority
+)
+{
+    /*switch (priority)
+    {
+        case PRIORITY_LOW:
+            return LOW_ESCALATION_HOURS *
+                   SECONDS_PER_HOUR;
 
+        case PRIORITY_MEDIUM:
+            return MEDIUM_ESCALATION_HOURS *
+                   SECONDS_PER_HOUR;
+
+        case PRIORITY_HIGH:
+            return HIGH_ESCALATION_HOURS *
+                   SECONDS_PER_HOUR;
+
+        case PRIORITY_CRITICAL:
+            return CRITICAL_ESCALATION_HOURS *
+                   SECONDS_PER_HOUR;
+
+        default:
+            return MEDIUM_ESCALATION_HOURS *
+                   SECONDS_PER_HOUR;
+    }*/
+    (void)priority;
+
+    return 60L;
+}
 /* =========================================================
  * ADMIN AUTHENTICATION
  * ========================================================= */
@@ -325,7 +358,8 @@ int updateComplaintStatus(
     }
 
     node->data.status = newStatus;
-
+    node->data.statusUpdatedEpoch =
+    time(NULL);
     return saveComplaintUpdate(
         app,
         node,
@@ -409,7 +443,7 @@ int escalateComplaint(
 
     node->data.status = STATUS_ESCALATED;
     node->data.escalationLevel = escalationLevel;
-
+    node->data.statusUpdatedEpoch = time(NULL);
     if (node->data.priority < PRIORITY_HIGH)
     {
         node->data.priority = PRIORITY_HIGH;
@@ -470,7 +504,8 @@ int resolveComplaint(
     );
 
     node->data.status = STATUS_RESOLVED;
-
+    node->data.statusUpdatedEpoch =
+    time(NULL);
     getCurrentTimestamp(
         node->data.resolvedAt,
         sizeof(node->data.resolvedAt)
@@ -510,7 +545,9 @@ int closeComplaint(
     }
 
     node->data.status = STATUS_CLOSED;
+    node->data.status = STATUS_CLOSED;
 
+    node->data.statusUpdatedEpoch = time(NULL);
     getCurrentTimestamp(
         node->data.closedAt,
         sizeof(node->data.closedAt)
@@ -524,7 +561,136 @@ int closeComplaint(
         "COMPLAINT_CLOSED"
     );
 }
+int checkAndEscalateOverdueComplaints(
+    ApplicationContext *app
+)
+{
+    ComplaintNode *current;
+    time_t currentTime;
+    double elapsedSeconds;
+    long allowedSeconds;
+    int escalatedCount;
 
+    if (app == NULL)
+    {
+        return 0;
+    }
+
+    currentTime = time(NULL);
+
+    if (currentTime == (time_t)-1)
+    {
+        writeApplicationLog(
+            "AUTO_ESCALATION",
+            "Unable to obtain current system time"
+        );
+
+        return 0;
+    }
+
+    escalatedCount = 0;
+    current = app->complaintHead;
+
+    while (current != NULL)
+    {
+        /*
+         * Only unresolved Open or In Progress
+         * complaints are checked.
+         */
+        if (current->data.status == STATUS_OPEN ||
+            current->data.status ==
+                STATUS_IN_PROGRESS)
+        {
+            /*
+             * Handle old or incomplete records
+             * with no stored status time.
+             */
+            if (current->data.statusUpdatedEpoch ==
+                (time_t)0)
+            {
+                current->data.statusUpdatedEpoch =
+                    currentTime;
+
+                current = current->next;
+                continue;
+            }
+
+            allowedSeconds =
+                getEscalationLimitSeconds(
+                    current->data.priority
+                );
+
+            elapsedSeconds = difftime(
+                currentTime,
+                current->data.statusUpdatedEpoch
+            );
+
+            if (elapsedSeconds >=
+                (double)allowedSeconds)
+            {
+                current->data.status =
+                    STATUS_ESCALATED;
+
+                current->data.escalationLevel =
+                    1U;
+
+                (void)snprintf(
+                    current->data.escalationReason,
+                    sizeof(
+                        current->data.escalationReason
+                    ),
+                    "%s",
+                    "Automatically escalated "
+                    "because the configured "
+                    "processing duration was exceeded"
+                );
+
+                getCurrentTimestamp(
+                    current->data.updatedAt,
+                    sizeof(
+                        current->data.updatedAt
+                    )
+                );
+
+                current->data.statusUpdatedEpoch =
+                    currentTime;
+
+                (void)addComplaintHistory(
+                    app,
+                    current->data.complaintId,
+                    "Automatically Escalated",
+                    current->data.escalationReason
+                );
+
+                writeComplaintAuditLog(
+                    "SYSTEM",
+                    "AUTO_ESCALATION",
+                    current->data.complaintId,
+                    "SUCCESS"
+                );
+
+                escalatedCount++;
+            }
+        }
+
+        current = current->next;
+    }
+
+    if (escalatedCount > 0)
+    {
+        if (!saveComplaints(app))
+        {
+            writeApplicationLog(
+                "AUTO_ESCALATION",
+                "Unable to save escalated complaints"
+            );
+
+            return 0;
+        }
+    }
+
+    return escalatedCount;
+}
 /* =========================================================
  * COMPLAINT HISTORY
  * ========================================================= */
@@ -546,7 +712,7 @@ int addComplaintHistory(
         return 0;
     }
 
-    newNode = (HistoryNode *)calloc(
+    newNode = calloc(
         1U,
         sizeof(*newNode)
     );
@@ -661,7 +827,6 @@ void displayComplaintHistory(
 /* =========================================================
  * SUMMARY REPORT
  * ========================================================= */
-
 void generateSummaryReport(
     const ApplicationContext *app
 )
@@ -675,6 +840,11 @@ void generateSummaryReport(
     int completedCount;
     int pendingHighCount;
     int pendingCriticalCount;
+
+    int totalRating;
+    int ratingCount;
+    double averageRating;
+
     int index;
 
     const ComplaintNode *current;
@@ -689,6 +859,10 @@ void generateSummaryReport(
     completedCount = 0;
     pendingHighCount = 0;
     pendingCriticalCount = 0;
+
+    totalRating = 0;
+    ratingCount = 0;
+    averageRating = 0.0;
 
     current = app->complaintHead;
 
@@ -737,6 +911,17 @@ void generateSummaryReport(
         else
         {
             completedCount++;
+        }
+
+        /* Rating Calculation */
+
+        if (current->data.customerRating >= 1 &&
+            current->data.customerRating <= 5)
+        {
+            totalRating +=
+                current->data.customerRating;
+
+            ratingCount++;
         }
 
         current = current->next;
@@ -811,6 +996,31 @@ void generateSummaryReport(
                 (ComplaintCategory)index
             ),
             categoryCount[index]
+        );
+    }
+
+    puts("\nCustomer Satisfaction");
+
+    if (ratingCount > 0)
+    {
+        averageRating =
+            (double)totalRating /
+            ratingCount;
+
+        printf(
+            "Average Customer Rating : %.2f / 5\n",
+            averageRating
+        );
+
+        printf(
+            "Total Ratings Received  : %d\n",
+            ratingCount
+        );
+    }
+    else
+    {
+        puts(
+            "Average Customer Rating : N/A"
         );
     }
 }

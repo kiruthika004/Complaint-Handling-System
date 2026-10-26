@@ -4,6 +4,43 @@
 
 #include "module1.h"
 #include "module2.h"
+static ComplaintPriority determinePriority(
+    ComplaintCategory category
+)
+{
+    switch(category)
+    {
+        case CATEGORY_PAYMENT_ISSUE:
+            return PRIORITY_CRITICAL;
+
+        case CATEGORY_MISSING_ITEM:
+            return PRIORITY_HIGH;
+
+        case CATEGORY_DAMAGED_PRODUCT:
+            return PRIORITY_HIGH;
+
+        case CATEGORY_REFUND_DELAY:
+            return PRIORITY_HIGH;
+
+        case CATEGORY_DELIVERY_DELAY:
+            return PRIORITY_MEDIUM;
+
+        case CATEGORY_WRONG_DELIVERY:
+            return PRIORITY_MEDIUM;
+
+        case CATEGORY_CANCELLATION_ISSUE:
+            return PRIORITY_MEDIUM;
+
+        case CATEGORY_PRODUCT_QUALITY:
+            return PRIORITY_LOW;
+
+        case CATEGORY_OTHER:
+            return PRIORITY_LOW;
+
+        default:
+            return PRIORITY_MEDIUM;
+    }
+}
 
 ComplaintNode *findComplaintById(
     ApplicationContext *app,
@@ -61,7 +98,18 @@ void displayComplaint(
            getPriorityText(complaint->priority));
     printf("Status          : %s\n",
            getStatusText(complaint->status));
+    if (complaint->status == STATUS_ESCALATED)
+{
+    printf(
+        "Escalation Level: %u\n",
+        complaint->escalationLevel
+    );
 
+    printf(
+        "Escalation Reason: %s\n",
+        complaint->escalationReason
+    );
+}
     printf(
         "Admin Remark    : %s\n",
         complaint->adminRemark[0] != '\0'
@@ -74,6 +122,18 @@ void displayComplaint(
         complaint->resolution[0] != '\0'
             ? complaint->resolution
             : "Not available"
+    );
+    
+    printf(
+    "Customer Rating : %u/5\n",
+    complaint->customerRating
+    );
+
+    printf(
+    "Customer Feedback : %s\n",
+    complaint->customerFeedback[0] != '\0'
+        ? complaint->customerFeedback
+        : "Not Available"
     );
 
     printf("Created At      : %s\n",
@@ -96,7 +156,7 @@ int registerComplaint(
         return 0;
     }
 
-    newNode = (ComplaintNode *)calloc(1U, sizeof(*newNode));
+    newNode = calloc(1U, sizeof(*newNode));
 
     if (newNode == NULL)
     {
@@ -191,11 +251,14 @@ int registerComplaint(
         app->counters.lastComplaintId;
 
     newNode->data.priority =
-        PRIORITY_MEDIUM;
+    determinePriority(
+        newNode->data.category
+    );
 
     newNode->data.status =
         STATUS_OPEN;
-
+    newNode->data.statusUpdatedEpoch =
+    time(NULL);
     getCurrentTimestamp(
         newNode->data.createdAt,
         sizeof(newNode->data.createdAt)
@@ -415,4 +478,82 @@ void filterComplaints(
     {
         puts("No matching complaints found.");
     }
+}
+int submitFeedback(
+    ApplicationContext *app
+)
+{
+    unsigned int complaintId;
+    ComplaintNode *node;
+    char feedback[FEEDBACK_LENGTH];
+
+    if(app == NULL)
+    {
+        return 0;
+    }
+
+    complaintId =
+        (unsigned int)readInteger(
+            "Complaint ID: ",
+            1,
+            2147483647
+        );
+
+    node =
+        findComplaintById(
+            app,
+            complaintId
+        );
+
+    if(node == NULL)
+    {
+        puts("Complaint not found.");
+        return 0;
+    }
+
+    if(node->data.status != STATUS_RESOLVED &&
+       node->data.status != STATUS_CLOSED)
+    {
+        puts(
+            "Feedback can only be provided "
+            "after complaint resolution."
+        );
+
+        return 0;
+    }
+
+    readLine(
+        "Customer Feedback: ",
+        feedback,
+        sizeof(feedback)
+    );
+
+    node->data.customerRating =
+        (unsigned int)readInteger(
+            "Rating (1-5): ",
+            1,
+            5
+        );
+
+    snprintf(
+        node->data.customerFeedback,
+        sizeof(node->data.customerFeedback),
+        "%s",
+        feedback
+    );
+
+    saveComplaints(app);
+
+    addComplaintHistory(
+        app,
+        complaintId,
+        "Customer Feedback",
+        feedback
+    );
+
+    puts(
+        "Feedback submitted successfully."
+    );
+
+    return 1;
 }

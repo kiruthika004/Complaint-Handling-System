@@ -139,6 +139,10 @@ void writeApplicationLog(
     const char *errorMessage
 );
 
+int checkAndEscalateOverdueComplaints(
+    ApplicationContext *app
+);
+
 /*
  * Dynamic-memory cleanup
  */

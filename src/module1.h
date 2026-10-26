@@ -5,6 +5,7 @@
 
 int registerComplaint(ApplicationContext *app);
 int trackComplaint(const ApplicationContext *app);
+int submitFeedback(ApplicationContext *app);
 
 ComplaintNode *findComplaintById(
     ApplicationContext *app,
