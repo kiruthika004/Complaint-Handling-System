@@ -1,0 +1,7 @@
+*.gcda
+*.gcno
+*.gcov
+*.o
+main_tests
+complaint_tests
+*.txt
