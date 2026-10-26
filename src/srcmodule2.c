@@ -545,7 +545,6 @@ int closeComplaint(
     }
 
     node->data.status = STATUS_CLOSED;
-    node->data.status = STATUS_CLOSED;
 
     node->data.statusUpdatedEpoch = time(NULL);
     getCurrentTimestamp(
@@ -843,7 +842,6 @@ void generateSummaryReport(
 
     int totalRating;
     int ratingCount;
-    double averageRating;
 
     int index;
 
@@ -862,7 +860,6 @@ void generateSummaryReport(
 
     totalRating = 0;
     ratingCount = 0;
-    averageRating = 0.0;
 
     current = app->complaintHead;
 
@@ -1003,7 +1000,7 @@ void generateSummaryReport(
 
     if (ratingCount > 0)
     {
-        averageRating =
+        double averageRating =
             (double)totalRating /
             ratingCount;
 

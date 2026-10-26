@@ -17,236 +17,236 @@ function readLine called 32 returned 100% blocks executed 95%
         -:   12:    size_t bufferSize
         -:   13:)
         -:   14:{
-       32:   15:    if (buffer == NULL || bufferSize == 0U)
+        -:   15:    size_t length;
+        -:   16:    int character;
+        -:   17:
+       32:   18:    if (buffer == NULL || bufferSize == 0U)
 branch  0 taken 97% (fallthrough)
 branch  1 taken 3%
 branch  2 taken 3% (fallthrough)
 branch  3 taken 97%
-        -:   16:    {
-        2:   17:        return;
-        -:   18:    }
-        -:   19:
-        -:   20:    while (1)
-        1:   21:    {
-        -:   22:        size_t length;
-        -:   23:
-       31:   24:        printf("%s", prompt);
+        -:   19:    {
+        2:   20:        return;
+        -:   21:    }
+        -:   22:
+        -:   23:    while (1)
+        -:   24:    {
+       31:   25:        printf("%s", prompt);
 call    0 returned 100%
-        -:   25:
-       31:   26:        if (fgets(buffer, (int)bufferSize, stdin) == NULL)
+        -:   26:
+       31:   27:        if (fgets(buffer, (int)bufferSize, stdin) == NULL)
 call    0 returned 100%
 branch  1 taken 0% (fallthrough)
 branch  2 taken 100%
-        -:   27:        {
-    #####:   28:            buffer[0] = '\0';
-    #####:   29:            return;
-        -:   30:        }
-        -:   31:
-       31:   32:        length = strlen(buffer);
-        -:   33:
-       31:   34:        if (length > 0U &&
+        -:   28:        {
+    #####:   29:            buffer[0] = '\0';
+    #####:   30:            return;
+        -:   31:        }
+        -:   32:
+       31:   33:        length = strlen(buffer);
+        -:   34:
+       31:   35:        if (length > 0U &&
 branch  0 taken 100% (fallthrough)
 branch  1 taken 0%
-       31:   35:            buffer[length - 1U] == '\n')
+       31:   36:            buffer[length - 1U] == '\n')
 branch  0 taken 97% (fallthrough)
 branch  1 taken 3%
-        -:   36:        {
-       30:   37:            buffer[length - 1U] = '\0';
-        -:   38:        }
-        -:   39:        else
-        -:   40:        {
-        -:   41:            int character;
-        -:   42:
-       18:   43:            while ((character = getchar()) != '\n' &&
+        -:   37:        {
+       30:   38:            buffer[length - 1U] = '\0';
+        -:   39:        }
+        -:   40:        else
+        -:   41:        {
+       18:   42:            while ((character = getchar()) != '\n' &&
 call    0 returned 100%
 branch  1 taken 94% (fallthrough)
 branch  2 taken 6%
 branch  3 taken 100%
 branch  4 taken 0% (fallthrough)
-        -:   44:                   character != EOF)
-        -:   45:            {
-        -:   46:                /* Discard additional input. */
-        -:   47:            }
-        -:   48:        }
-        -:   49:
-       31:   50:        if (buffer[0] != '\0')
+        -:   43:                   character != EOF)
+        -:   44:            {
+        -:   45:                /* Discard additional input. */
+        -:   46:            }
+        -:   47:        }
+        -:   48:
+       31:   49:        if (buffer[0] != '\0')
 branch  0 taken 97% (fallthrough)
 branch  1 taken 3%
-        -:   51:        {
-       30:   52:            return;
-        -:   53:        }
-        -:   54:
-        1:   55:        puts("Input cannot be empty.");
+        -:   50:        {
+       30:   51:            return;
+        -:   52:        }
+        -:   53:
+        1:   54:        puts("Input cannot be empty.");
 call    0 returned 100%
-        -:   56:    }
-        -:   57:}
-        -:   58:
+        -:   55:    }
+        -:   56:}
+        -:   57:
 function readInteger called 14 returned 100% blocks executed 100%
-       14:   59:int readInteger(
-        -:   60:    const char *prompt,
-        -:   61:    int minimum,
-        -:   62:    int maximum
-        -:   63:)
-        -:   64:{
-        -:   65:    char input[64];
-        -:   66:    char *endPointer;
+       14:   58:int readInteger(
+        -:   59:    const char *prompt,
+        -:   60:    int minimum,
+        -:   61:    int maximum
+        -:   62:)
+        -:   63:{
+        -:   64:    char input[64];
+        -:   65:    char *endPointer;
+        -:   66:    long value;
         -:   67:
         -:   68:    while (1)
-        2:   69:    {
-        -:   70:        long value;
+        -:   69:    {
+       16:   70:        readLine(prompt, input, sizeof(input));
+call    0 returned 100%
         -:   71:
-       16:   72:        readLine(prompt, input, sizeof(input));
+       16:   72:        value = strtol(input, &endPointer, 10);
 call    0 returned 100%
         -:   73:
-       16:   74:        value = strtol(input, &endPointer, 10);
-call    0 returned 100%
-        -:   75:
-       16:   76:        if (*endPointer == '\0' &&
+       16:   74:        if (*endPointer == '\0' &&
 branch  0 taken 94% (fallthrough)
 branch  1 taken 6%
-       15:   77:            value >= minimum &&
+       15:   75:            value >= minimum &&
 branch  0 taken 93% (fallthrough)
 branch  1 taken 7%
-       14:   78:            value <= maximum)
+       14:   76:            value <= maximum)
 branch  0 taken 100% (fallthrough)
 branch  1 taken 0%
-        -:   79:        {
-       14:   80:            return (int)value;
-        -:   81:        }
-        -:   82:
-        2:   83:        printf(
+        -:   77:        {
+       14:   78:            return (int)value;
+        -:   79:        }
+        -:   80:
+        2:   81:        printf(
 call    0 returned 100%
-        -:   84:            "Enter a value between %d and %d.\n",
-        -:   85:            minimum,
-        -:   86:            maximum
-        -:   87:        );
-        -:   88:    }
-        -:   89:}
-        -:   90:
+        -:   82:            "Enter a value between %d and %d.\n",
+        -:   83:            minimum,
+        -:   84:            maximum
+        -:   85:        );
+        -:   86:    }
+        -:   87:}
+        -:   88:
 function validateEmail called 9 returned 100% blocks executed 100%
-        9:   91:int validateEmail(const char *email)
-        -:   92:{
-        -:   93:    const char *atSymbol;
-        -:   94:    const char *dotSymbol;
-        -:   95:
-        9:   96:    if (email == NULL ||
+        9:   89:int validateEmail(const char *email)
+        -:   90:{
+        -:   91:    const char *atSymbol;
+        -:   92:    const char *dotSymbol;
+        -:   93:
+        9:   94:    if (email == NULL ||
 branch  0 taken 89% (fallthrough)
 branch  1 taken 11%
-        8:   97:        strchr(email, ' ') != NULL)
+        8:   95:        strchr(email, ' ') != NULL)
 branch  0 taken 12% (fallthrough)
 branch  1 taken 88%
-        -:   98:    {
-        2:   99:        return 0;
-        -:  100:    }
+        -:   96:    {
+        2:   97:        return 0;
+        -:   98:    }
+        -:   99:
+        7:  100:    atSymbol = strchr(email, '@');
         -:  101:
-        7:  102:    atSymbol = strchr(email, '@');
-        -:  103:
-        7:  104:    if (atSymbol == NULL ||
+        7:  102:    if (atSymbol == NULL ||
 branch  0 taken 86% (fallthrough)
 branch  1 taken 14%
 branch  2 taken 17% (fallthrough)
 branch  3 taken 83%
-        -:  105:        atSymbol == email)
-        -:  106:    {
-        2:  107:        return 0;
-        -:  108:    }
+        -:  103:        atSymbol == email)
+        -:  104:    {
+        2:  105:        return 0;
+        -:  106:    }
+        -:  107:
+        5:  108:    dotSymbol = strchr(atSymbol + 1, '.');
         -:  109:
-        5:  110:    dotSymbol = strchr(atSymbol + 1, '.');
-        -:  111:
-        9:  112:    return (dotSymbol != NULL &&
+        9:  110:    return dotSymbol != NULL &&
 branch  0 taken 80% (fallthrough)
 branch  1 taken 20%
-        4:  113:            dotSymbol[1] != '\0');
+        4:  111:           dotSymbol[1] != '\0';
 branch  0 taken 75% (fallthrough)
 branch  1 taken 25%
-        -:  114:}
-        -:  115:
+        -:  112:}
+        -:  113:
 function validatePhone called 8 returned 100% blocks executed 100%
-        8:  116:int validatePhone(const char *phone)
-        -:  117:{
-        -:  118:    size_t index;
-        -:  119:    size_t length;
-        -:  120:
-        8:  121:    if (phone == NULL)
+        8:  114:int validatePhone(const char *phone)
+        -:  115:{
+        -:  116:    size_t index;
+        -:  117:    size_t length;
+        -:  118:
+        8:  119:    if (phone == NULL)
 branch  0 taken 12% (fallthrough)
 branch  1 taken 88%
-        -:  122:    {
-        1:  123:        return 0;
-        -:  124:    }
+        -:  120:    {
+        1:  121:        return 0;
+        -:  122:    }
+        -:  123:
+        7:  124:    length = strlen(phone);
         -:  125:
-        7:  126:    length = strlen(phone);
-        -:  127:
-        7:  128:    if (length < 8U || length > 15U)
+        7:  126:    if (length < 8U || length > 15U)
 branch  0 taken 86% (fallthrough)
 branch  1 taken 14%
 branch  2 taken 17% (fallthrough)
 branch  3 taken 83%
-        -:  129:    {
-        2:  130:        return 0;
-        -:  131:    }
-        -:  132:
-       45:  133:    for (index = 0U; index < length; index++)
+        -:  127:    {
+        2:  128:        return 0;
+        -:  129:    }
+        -:  130:
+       45:  131:    for (index = 0U; index < length; index++)
 branch  0 taken 93%
 branch  1 taken 7% (fallthrough)
-        -:  134:    {
-       42:  135:        if (!isdigit((unsigned char)phone[index]))
+        -:  132:    {
+       42:  133:        if (!isdigit((unsigned char)phone[index]))
 branch  0 taken 5% (fallthrough)
 branch  1 taken 95%
-        -:  136:        {
-        2:  137:            return 0;
-        -:  138:        }
-        -:  139:    }
-        -:  140:
-        3:  141:    return 1;
-        -:  142:}
-        -:  143:
+        -:  134:        {
+        2:  135:            return 0;
+        -:  136:        }
+        -:  137:    }
+        -:  138:
+        3:  139:    return 1;
+        -:  140:}
+        -:  141:
 function getCurrentTimestamp called 42 returned 100% blocks executed 79%
-       42:  144:void getCurrentTimestamp(
-        -:  145:    char *buffer,
-        -:  146:    size_t bufferSize
-        -:  147:)
-        -:  148:{
-        -:  149:    time_t currentTime;
-        -:  150:    time_t istTime;
-        -:  151:    const struct tm *istDateTime;
-        -:  152:    size_t result;
-        -:  153:
-       42:  154:    if (buffer == NULL || bufferSize == 0U)
+       42:  142:void getCurrentTimestamp(
+        -:  143:    char *buffer,
+        -:  144:    size_t bufferSize
+        -:  145:)
+        -:  146:{
+        -:  147:    time_t currentTime;
+        -:  148:    time_t istTime;
+        -:  149:    struct tm *istDateTime;
+        -:  150:    size_t result;
+        -:  151:
+       42:  152:    if (buffer == NULL || bufferSize == 0U)
 branch  0 taken 98% (fallthrough)
 branch  1 taken 2%
 branch  2 taken 2% (fallthrough)
 branch  3 taken 98%
-        -:  155:    {
-        2:  156:        return;
-        -:  157:    }
-        -:  158:
-       40:  159:    currentTime = time(NULL);
+        -:  153:    {
+        2:  154:        return;
+        -:  155:    }
+        -:  156:
+       40:  157:    currentTime = time(NULL);
 call    0 returned 100%
-        -:  160:
-       40:  161:    if (currentTime == (time_t)-1)
+        -:  158:
+       40:  159:    if (currentTime == (time_t)-1)
 branch  0 taken 0% (fallthrough)
 branch  1 taken 100%
-        -:  162:    {
-    #####:  163:        (void)snprintf(
-        -:  164:            buffer,
-        -:  165:            bufferSize,
-        -:  166:            "Timestamp unavailable"
-        -:  167:        );
-        -:  168:
-    #####:  169:        return;
-        -:  170:    }
-        -:  171:
-        -:  172:    /*
-        -:  173:     * Indian Standard Time is UTC +05:30.
-        -:  174:     * Total offset = 19800 seconds.
-        -:  175:     */
-       40:  176:    istTime = currentTime +
-       40:  177:              (time_t)(5 * 60 * 60) +
-        -:  178:              (time_t)(30 * 60);
+        -:  160:    {
+    #####:  161:        (void)snprintf(
+        -:  162:            buffer,
+        -:  163:            bufferSize,
+        -:  164:            "Timestamp unavailable"
+        -:  165:        );
+        -:  166:
+    #####:  167:        return;
+        -:  168:    }
+        -:  169:
+        -:  170:    /*
+        -:  171:     * Indian Standard Time is UTC + 05:30.
+        -:  172:     *
+        -:  173:     * 5 hours  = 5 * 60 * 60 seconds
+        -:  174:     * 30 mins  = 30 * 60 seconds
+        -:  175:     * Total    = 19800 seconds
+        -:  176:     */
+       40:  177:    istTime = currentTime + (time_t)(5 * 60 * 60)
+       40:  178:                          + (time_t)(30 * 60);
         -:  179:
         -:  180:    /*
-        -:  181:     * gmtime() is used because the IST
-        -:  182:     * offset has already been added.
+        -:  181:     * gmtime() is used because the IST offset
+        -:  182:     * has already been added manually.
         -:  183:     */
        40:  184:    istDateTime = gmtime(&istTime);
 call    0 returned 100%
@@ -284,81 +284,83 @@ branch  1 taken 100%
     #####:  212:        return;
         -:  213:    }
         -:  214:
-       40:  215:    (void)snprintf(
-        -:  216:        buffer + result,
-        -:  217:        bufferSize - result,
-        -:  218:        " +0530 IST"
-        -:  219:    );
-        -:  220:}
-        -:  221:
+        -:  215:    /*
+        -:  216:     * Append the fixed IST timezone indicator.
+        -:  217:     */
+       40:  218:    (void)snprintf(
+        -:  219:        buffer + result,
+        -:  220:        bufferSize - result,
+        -:  221:        " +0530 IST"
+        -:  222:    );
+        -:  223:}
 function getStatusText called 31 returned 100% blocks executed 100%
-       31:  222:const char *getStatusText(
-        -:  223:    ComplaintStatus status
-        -:  224:)
-        -:  225:{
-       31:  226:    switch (status)
+       31:  224:const char *getStatusText(
+        -:  225:    ComplaintStatus status
+        -:  226:)
+        -:  227:{
+       31:  228:    switch (status)
 branch  0 taken 16%
 branch  1 taken 16%
 branch  2 taken 13%
 branch  3 taken 13%
 branch  4 taken 13%
 branch  5 taken 29%
-        -:  227:    {
-        5:  228:        case STATUS_OPEN:
-        5:  229:            return "Open";
-        -:  230:
-        5:  231:        case STATUS_IN_PROGRESS:
-        5:  232:            return "In Progress";
-        -:  233:
-        4:  234:        case STATUS_ESCALATED:
-        4:  235:            return "Escalated";
-        -:  236:
-        4:  237:        case STATUS_RESOLVED:
-        4:  238:            return "Resolved";
-        -:  239:
-        4:  240:        case STATUS_CLOSED:
-        4:  241:            return "Closed";
-        -:  242:
-        9:  243:        default:
-        9:  244:            return "Unknown";
-        -:  245:    }
-        -:  246:}
-        -:  247:
+        -:  229:    {
+        5:  230:        case STATUS_OPEN:
+        5:  231:            return "Open";
+        -:  232:
+        5:  233:        case STATUS_IN_PROGRESS:
+        5:  234:            return "In Progress";
+        -:  235:
+        4:  236:        case STATUS_ESCALATED:
+        4:  237:            return "Escalated";
+        -:  238:
+        4:  239:        case STATUS_RESOLVED:
+        4:  240:            return "Resolved";
+        -:  241:
+        4:  242:        case STATUS_CLOSED:
+        4:  243:            return "Closed";
+        -:  244:
+        9:  245:        default:
+        9:  246:            return "Unknown";
+        -:  247:    }
+        -:  248:}
+        -:  249:
 function getPriorityText called 27 returned 100% blocks executed 100%
-       27:  248:const char *getPriorityText(
-        -:  249:    ComplaintPriority priority
-        -:  250:)
-        -:  251:{
-       27:  252:    switch (priority)
+       27:  250:const char *getPriorityText(
+        -:  251:    ComplaintPriority priority
+        -:  252:)
+        -:  253:{
+       27:  254:    switch (priority)
 branch  0 taken 15%
 branch  1 taken 15%
 branch  2 taken 22%
 branch  3 taken 15%
 branch  4 taken 33%
-        -:  253:    {
-        4:  254:        case PRIORITY_LOW:
-        4:  255:            return "Low";
-        -:  256:
-        4:  257:        case PRIORITY_MEDIUM:
-        4:  258:            return "Medium";
-        -:  259:
-        6:  260:        case PRIORITY_HIGH:
-        6:  261:            return "High";
-        -:  262:
-        4:  263:        case PRIORITY_CRITICAL:
-        4:  264:            return "Critical";
-        -:  265:
-        9:  266:        default:
-        9:  267:            return "Unknown";
-        -:  268:    }
-        -:  269:}
-        -:  270:
+        -:  255:    {
+        4:  256:        case PRIORITY_LOW:
+        4:  257:            return "Low";
+        -:  258:
+        4:  259:        case PRIORITY_MEDIUM:
+        4:  260:            return "Medium";
+        -:  261:
+        6:  262:        case PRIORITY_HIGH:
+        6:  263:            return "High";
+        -:  264:
+        4:  265:        case PRIORITY_CRITICAL:
+        4:  266:            return "Critical";
+        -:  267:
+        9:  268:        default:
+        9:  269:            return "Unknown";
+        -:  270:    }
+        -:  271:}
+        -:  272:
 function getCategoryText called 46 returned 100% blocks executed 100%
-       46:  271:const char *getCategoryText(
-        -:  272:    ComplaintCategory category
-        -:  273:)
-        -:  274:{
-       46:  275:    switch (category)
+       46:  273:const char *getCategoryText(
+        -:  274:    ComplaintCategory category
+        -:  275:)
+        -:  276:{
+       46:  277:    switch (category)
 branch  0 taken 9%
 branch  1 taken 9%
 branch  2 taken 9%
@@ -369,46 +371,46 @@ branch  6 taken 9%
 branch  7 taken 9%
 branch  8 taken 9%
 branch  9 taken 20%
-        -:  276:    {
-        4:  277:        case CATEGORY_DAMAGED_PRODUCT:
-        4:  278:            return "Damaged Product";
-        -:  279:
-        4:  280:        case CATEGORY_WRONG_DELIVERY:
-        4:  281:            return "Wrong Delivery";
-        -:  282:
-        4:  283:        case CATEGORY_MISSING_ITEM:
-        4:  284:            return "Missing Item";
-        -:  285:
-        4:  286:        case CATEGORY_DELIVERY_DELAY:
-        4:  287:            return "Delivery Delay";
-        -:  288:
-        5:  289:        case CATEGORY_PAYMENT_ISSUE:
-        5:  290:            return "Payment Issue";
-        -:  291:
-        4:  292:        case CATEGORY_REFUND_DELAY:
-        4:  293:            return "Refund Delay";
-        -:  294:
-        4:  295:        case CATEGORY_CANCELLATION_ISSUE:
-        4:  296:            return "Cancellation Issue";
-        -:  297:
-        4:  298:        case CATEGORY_PRODUCT_QUALITY:
-        4:  299:            return "Product Quality";
-        -:  300:
-        4:  301:        case CATEGORY_OTHER:
-        4:  302:            return "Other";
-        -:  303:
-        9:  304:        default:
-        9:  305:            return "Unknown";
-        -:  306:    }
-        -:  307:}
-        -:  308:
+        -:  278:    {
+        4:  279:        case CATEGORY_DAMAGED_PRODUCT:
+        4:  280:            return "Damaged Product";
+        -:  281:
+        4:  282:        case CATEGORY_WRONG_DELIVERY:
+        4:  283:            return "Wrong Delivery";
+        -:  284:
+        4:  285:        case CATEGORY_MISSING_ITEM:
+        4:  286:            return "Missing Item";
+        -:  287:
+        4:  288:        case CATEGORY_DELIVERY_DELAY:
+        4:  289:            return "Delivery Delay";
+        -:  290:
+        5:  291:        case CATEGORY_PAYMENT_ISSUE:
+        5:  292:            return "Payment Issue";
+        -:  293:
+        4:  294:        case CATEGORY_REFUND_DELAY:
+        4:  295:            return "Refund Delay";
+        -:  296:
+        4:  297:        case CATEGORY_CANCELLATION_ISSUE:
+        4:  298:            return "Cancellation Issue";
+        -:  299:
+        4:  300:        case CATEGORY_PRODUCT_QUALITY:
+        4:  301:            return "Product Quality";
+        -:  302:
+        4:  303:        case CATEGORY_OTHER:
+        4:  304:            return "Other";
+        -:  305:
+        9:  306:        default:
+        9:  307:            return "Unknown";
+        -:  308:    }
+        -:  309:}
+        -:  310:
 function pauseScreen called 1 returned 100% blocks executed 100%
-        1:  309:void pauseScreen(void)
-        -:  310:{
-        -:  311:    char input[8];
-        -:  312:
-        1:  313:    printf("\nPress Enter to continue...");
+        1:  311:void pauseScreen(void)
+        -:  312:{
+        -:  313:    char input[8];
+        -:  314:
+        1:  315:    printf("\nPress Enter to continue...");
 call    0 returned 100%
-        1:  314:    (void)fgets(input, sizeof(input), stdin);
+        1:  316:    (void)fgets(input, sizeof(input), stdin);
 call    0 returned 100%
-        1:  315:}
+        1:  317:}

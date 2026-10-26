@@ -7,6 +7,10 @@ extern "C"
     #include "module1.h"
     #include "module2.h"
 }
+#define main complaint_main
+#include "../src/main.c"
+#undef main
+
 TEST(EmailTest, NullEmail)
 {
     EXPECT_FALSE(validateEmail(NULL));
@@ -834,7 +838,539 @@ TEST(RegisterComplaintTest, SuccessfulRegistration)
 
     remove("register.txt");
 }
+//Escalated complaint display
+TEST(DisplayComplaintTest, EscalatedComplaint)
+{
+    Complaint complaint{};
 
+    complaint.complaintId = 1001;
+    complaint.status = STATUS_ESCALATED;
+    complaint.escalationLevel = 2;
+
+    strcpy(
+        complaint.escalationReason,
+        "Urgent issue"
+    );
+
+    displayComplaint(&complaint);
+
+    SUCCEED();
+}
+//Customer feedback display
+TEST(DisplayComplaintTest, FeedbackPresent)
+{
+    Complaint complaint{};
+
+    complaint.complaintId = 1001;
+
+    complaint.customerRating = 5;
+
+    strcpy(
+        complaint.customerFeedback,
+        "Very good support"
+    );
+
+    displayComplaint(&complaint);
+
+    SUCCEED();
+}
+//submit feedback
+TEST(SubmitFeedbackTest, NullApp)
+{
+    EXPECT_EQ(
+        submitFeedback(NULL),
+        0
+    );
+}
+//Complaint not found
+TEST(SubmitFeedbackTest, ComplaintNotFound)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen(
+        "feedback1.txt",
+        "w"
+    );
+
+    fprintf(
+        fp,
+        "1001\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "feedback1.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        submitFeedback(&app),
+        0
+    );
+
+    remove("feedback1.txt");
+}
+//cover unresolved complaint
+TEST(SubmitFeedbackTest, NotResolved)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+
+    app.complaintHead = &node;
+
+    FILE *fp = fopen(
+        "feedback2.txt",
+        "w"
+    );
+
+    fprintf(
+        fp,
+        "1001\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "feedback2.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        submitFeedback(&app),
+        0
+    );
+
+    remove("feedback2.txt");
+}
+//cover successful feedback
+TEST(SubmitFeedbackTest, Success)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_RESOLVED;
+
+    app.complaintHead = &node;
+
+    FILE *fp = fopen(
+        "feedback3.txt",
+        "w"
+    );
+
+    fprintf(
+        fp,
+        "1001\n"
+        "Good service\n"
+        "5\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "feedback3.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        submitFeedback(&app),
+        1
+    );
+
+    remove("feedback3.txt");
+}
+//cover invalid email branch 
+TEST(RegisterComplaintTest, InvalidEmailThenValid)
+{
+    ApplicationContext app{};
+
+    FILE *fp =
+        fopen("reg_email.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "wrongemail\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "1\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "reg_email.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("reg_email.txt");
+}
+//cover invalid phone branch
+TEST(RegisterComplaintTest, InvalidPhoneThenValid)
+{
+    ApplicationContext app{};
+
+    FILE *fp =
+        fopen("reg_phone.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "abcd\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "1\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "reg_phone.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("reg_phone.txt");
+}
+//Payment issue
+TEST(RegisterComplaintTest, CategoryPaymentIssue)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat5.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "5\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat5.txt","r",stdin);
+
+    EXPECT_EQ(registerComplaint(&app),1);
+
+    remove("cat5.txt");
+}
+//Track complaint phone branch
+TEST(TrackComplaintTest, MatchUsingPhone)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+
+    strcpy(node.data.orderId,"ORD001");
+    strcpy(node.data.email,"abc@gmail.com");
+    strcpy(node.data.phone,"9876543210");
+
+    app.complaintHead = &node;
+
+    FILE *fp = fopen("phonematch.txt","w");
+
+    fprintf(
+        fp,
+        "1001\n"
+        "ORD001\n"
+        "9876543210\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "phonematch.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        trackComplaint(&app),
+        1
+    );
+
+    remove("phonematch.txt");
+}
+//Linked list traversal
+TEST(RegisterComplaintTest, AppendToExistingList)
+{
+    ApplicationContext app{};
+
+    ComplaintNode existing{};
+
+    existing.data.complaintId = 1000;
+    existing.next = NULL;
+
+    app.complaintHead = &existing;
+
+    FILE *fp = fopen("append.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "1\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "append.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("append.txt");
+}
+//Missing item
+TEST(RegisterComplaintTest, CategoryMissingItem)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat3.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "3\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat3.txt","r",stdin);
+
+    EXPECT_EQ(registerComplaint(&app),1);
+
+    remove("cat3.txt");
+}
+//wrong delivery
+TEST(RegisterComplaintTest, CategoryWrongDelivery)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat2.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "2\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat2.txt","r",stdin);
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("cat2.txt");
+}
+//delivery delay
+TEST(RegisterComplaintTest, CategoryDeliveryDelay)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat4.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "4\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat4.txt","r",stdin);
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("cat4.txt");
+}
+//Refund delay
+TEST(RegisterComplaintTest, CategoryRefundDelay)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat6.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "6\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat6.txt","r",stdin);
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("cat6.txt");
+}
+//cancellation issue
+TEST(RegisterComplaintTest, CategoryCancellationIssue)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat7.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "7\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat7.txt","r",stdin);
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("cat7.txt");
+}
+//Product quality
+TEST(RegisterComplaintTest, CategoryProductQuality)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat8.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "8\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat8.txt","r",stdin);
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("cat8.txt");
+}
+//other category
+TEST(RegisterComplaintTest, CategoryOther)
+{
+    ApplicationContext app{};
+
+    FILE *fp = fopen("cat9.txt","w");
+
+    fprintf(
+        fp,
+        "John\n"
+        "john@gmail.com\n"
+        "9876543210\n"
+        "ORD001\n"
+        "PROD001\n"
+        "9\n"
+        "Title\n"
+        "Description\n"
+    );
+
+    fclose(fp);
+
+    freopen("cat9.txt","r",stdin);
+
+    EXPECT_EQ(
+        registerComplaint(&app),
+        1
+    );
+
+    remove("cat9.txt");
+}
 //SrcModule2
 
 //AUTHENTICATE_ADMIN
@@ -2041,3 +2577,415 @@ TEST(InitializeTest, MissingCounterFile)
 
     freeApplicationData(&app);
 }
+//auto escalation
+TEST(AutoEscalationTest, NullApp)
+{
+    EXPECT_EQ(
+        checkAndEscalateOverdueComplaints(NULL),
+        0
+    );
+}
+TEST(AutoEscalationTest, EmptyList)
+{
+    ApplicationContext app{};
+
+    EXPECT_EQ(
+        checkAndEscalateOverdueComplaints(&app),
+        0
+    );
+}
+TEST(AutoEscalationTest, ClosedComplaint)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.status = STATUS_CLOSED;
+
+    app.complaintHead = &node;
+
+    EXPECT_EQ(
+        checkAndEscalateOverdueComplaints(&app),
+        0
+    );
+}
+TEST(AutoEscalationTest, EscalateOverdueComplaint)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+    node.data.priority = PRIORITY_LOW;
+
+    node.data.statusUpdatedEpoch =
+        time(NULL) - (60 * 60 * 24 * 10);
+
+    app.complaintHead = &node;
+
+    EXPECT_GT(
+        checkAndEscalateOverdueComplaints(&app),
+        0
+    );
+}
+//average rating logic
+TEST(SummaryReportTest, AverageRating)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.status = STATUS_CLOSED;
+    node.data.customerRating = 5;
+
+    app.complaintHead = &node;
+
+    generateSummaryReport(&app);
+
+    SUCCEED();
+}
+TEST(SummaryReportTest, MultipleRatings)
+{
+    ApplicationContext app{};
+
+    ComplaintNode n1{};
+    ComplaintNode n2{};
+
+    n1.data.customerRating = 4;
+    n2.data.customerRating = 5;
+
+    n1.next = &n2;
+
+    app.complaintHead = &n1;
+
+    generateSummaryReport(&app);
+
+    SUCCEED();
+}
+//Linked list traversal
+TEST(SaveHistoryTest, MultipleHistoryNodes)
+{
+    ApplicationContext app{};
+
+    HistoryNode h1{};
+    HistoryNode h2{};
+
+    h1.next = &h2;
+
+    app.historyHead = &h1;
+
+    EXPECT_TRUE(
+        saveHistory(&app)
+    );
+}
+TEST(SaveComplaintTest, ThreeNodesTraversal)
+{
+    ApplicationContext app{};
+
+    ComplaintNode c1{};
+    ComplaintNode c2{};
+    ComplaintNode c3{};
+
+    c1.next = &c2;
+    c2.next = &c3;
+    c3.next = NULL;
+
+    app.complaintHead = &c1;
+
+    EXPECT_TRUE(saveComplaints(&app));
+}
+TEST(SaveHistoryTest, ThreeNodesTraversal)
+{
+    ApplicationContext app{};
+
+    HistoryNode h1{};
+    HistoryNode h2{};
+    HistoryNode h3{};
+
+    h1.next = &h2;
+    h2.next = &h3;
+    h3.next = NULL;
+
+    app.historyHead = &h1;
+
+    EXPECT_TRUE(saveHistory(&app));
+}
+TEST(AutoEscalationTest, ZeroStatusUpdatedEpoch)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.status = STATUS_OPEN;
+    node.data.priority = PRIORITY_LOW;
+    node.data.statusUpdatedEpoch = 0;
+
+    app.complaintHead = &node;
+
+    EXPECT_EQ(
+        checkAndEscalateOverdueComplaints(&app),
+        0
+    );
+}
+/*
+//Exit immediately
+TEST(MainTest, ExitImmediately)
+{
+    FILE *fp = fopen("main1.txt","w");
+
+    fprintf(fp,"3\n");
+
+    fclose(fp);
+
+    freopen("main1.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main1.txt");
+}
+//customer menu back
+TEST(MainTest, CustomerMenuBack)
+{
+    FILE *fp = fopen("main2.txt","w");
+
+    fprintf(
+        fp,
+        "1\n"
+        "4\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen(
+        "main2.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main2.txt");
+}
+//Track complaint customer menu
+TEST(MainTest, CustomerTrackComplaint)
+{
+    FILE *fp = fopen("main3.txt","w");
+
+    fprintf(
+        fp,
+        "1\n"
+        "2\n"
+        "1001\n"
+        "ORD1\n"
+        "email@test.com\n"
+        "\n"
+        "4\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main3.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main3.txt");
+}
+//submit feedback
+TEST(MainTest, CustomerSubmitFeedback)
+{
+    FILE *fp = fopen("main4.txt","w");
+
+    fprintf(
+        fp,
+        "1\n"
+        "3\n"
+        "1001\n"
+        "\n"
+        "4\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main4.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main4.txt");
+}
+//admin login failure
+TEST(MainTest, AdminLoginFailure)
+{
+    FILE *fp = fopen("main5.txt","w");
+
+    fprintf(
+        fp,
+        "2\n"
+        "bad\n"
+        "bad\n"
+        "bad\n"
+        "bad\n"
+        "bad\n"
+        "bad\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main5.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main5.txt");
+}
+//admin login success
+TEST(MainTest, AdminLoginSuccessLogout)
+{
+    FILE *fp = fopen("main6.txt","w");
+
+    fprintf(
+        fp,
+        "2\n"
+        "admin\n"
+        "admin123\n"
+        "12\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main6.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main6.txt");
+}
+//view all complaints
+TEST(MainTest, AdminMenuViewAll)
+{
+    FILE *fp = fopen("main7.txt","w");
+
+    fprintf(
+        fp,
+        "2\n"
+        "admin\n"
+        "admin123\n"
+        "1\n"
+        "\n"
+        "12\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main7.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main7.txt");
+}
+//search complaint not found
+TEST(MainTest, SearchComplaintNotFound)
+{
+    FILE *fp = fopen("main8.txt","w");
+
+    fprintf(
+        fp,
+        "2\n"
+        "admin\n"
+        "admin123\n"
+        "2\n"
+        "9999\n"
+        "\n"
+        "12\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main8.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main8.txt");
+}
+//filter complaints
+TEST(MainTest, FilterComplaints)
+{
+    FILE *fp = fopen("main9.txt","w");
+
+    fprintf(
+        fp,
+        "2\n"
+        "admin\n"
+        "admin123\n"
+        "3\n"
+        "1\n"
+        "1\n"
+        "\n"
+        "12\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main9.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main9.txt");
+}
+//generate summary report
+TEST(MainTest, SummaryReport)
+{
+    FILE *fp = fopen("main10.txt","w");
+
+    fprintf(
+        fp,
+        "2\n"
+        "admin\n"
+        "admin123\n"
+        "11\n"
+        "\n"
+        "12\n"
+        "3\n"
+    );
+
+    fclose(fp);
+
+    freopen("main10.txt","r",stdin);
+
+    EXPECT_EQ(
+        complaint_main(),
+        0
+    );
+
+    remove("main10.txt");
+}
+    */

@@ -12,7 +12,7 @@ void readLine(
     size_t bufferSize
 )
 {
-    size_t length;
+    
     int character;
 
     if (buffer == NULL || bufferSize == 0U)
@@ -22,6 +22,7 @@ void readLine(
 
     while (1)
     {
+        size_t length;
         printf("%s", prompt);
 
         if (fgets(buffer, (int)bufferSize, stdin) == NULL)
@@ -63,10 +64,11 @@ int readInteger(
 {
     char input[64];
     char *endPointer;
-    long value;
+    
 
     while (1)
     {
+        long value;
         readLine(prompt, input, sizeof(input));
 
         value = strtol(input, &endPointer, 10);
@@ -146,7 +148,7 @@ void getCurrentTimestamp(
 {
     time_t currentTime;
     time_t istTime;
-    struct tm *istDateTime;
+    const struct tm *istDateTime;
     size_t result;
 
     if (buffer == NULL || bufferSize == 0U)
