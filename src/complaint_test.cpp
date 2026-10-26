@@ -445,6 +445,9 @@ TEST(PauseScreenTest, EnterPressed)
 
     remove("pause.txt");
 }
+
+//SrcModule1
+
 //find complaint by id
 TEST(FindComplaintTest, NullApp)
 {
@@ -831,6 +834,9 @@ TEST(RegisterComplaintTest, SuccessfulRegistration)
 
     remove("register.txt");
 }
+
+//SrcModule2
+
 //AUTHENTICATE_ADMIN
 TEST(AdminTest, ValidCredentials)
 {
@@ -1106,4 +1112,932 @@ TEST(RemarkTest, Success)
             "Checked"
         )
     );
+}
+//escalate complaint
+TEST(EscalateTest, NullApp)
+{
+    EXPECT_FALSE(
+        escalateComplaint(
+            NULL,
+            1001,
+            2,
+            "Urgent"
+        )
+    );
+}
+TEST(EscalateTest, NullReason)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        escalateComplaint(
+            &app,
+            1001,
+            2,
+            NULL
+        )
+    );
+}
+TEST(EscalateTest, EmptyReason)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        escalateComplaint(
+            &app,
+            1001,
+            2,
+            ""
+        )
+    );
+}
+TEST(EscalateTest, InvalidLevelLow)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        escalateComplaint(
+            &app,
+            1001,
+            0,
+            "Urgent"
+        )
+    );
+}
+TEST(EscalateTest, InvalidLevelHigh)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        escalateComplaint(
+            &app,
+            1001,
+            4,
+            "Urgent"
+        )
+    );
+}
+TEST(EscalateTest, ComplaintNotFound)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        escalateComplaint(
+            &app,
+            1001,
+            2,
+            "Urgent"
+        )
+    );
+}
+TEST(EscalateTest, ResolvedComplaint)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_RESOLVED;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        escalateComplaint(
+            &app,
+            1001,
+            2,
+            "Urgent"
+        )
+    );
+}
+TEST(EscalateTest, Success)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+    node.data.priority = PRIORITY_LOW;
+
+    app.complaintHead = &node;
+
+    EXPECT_TRUE(
+        escalateComplaint(
+            &app,
+            1001,
+            2,
+            "Critical issue"
+        )
+    );
+}
+//resolve Complaint
+TEST(ResolveTest, NullApp)
+{
+    EXPECT_FALSE(
+        resolveComplaint(
+            NULL,
+            1001,
+            "Resolved"
+        )
+    );
+}
+TEST(ResolveTest, NullResolution)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        resolveComplaint(
+            &app,
+            1001,
+            NULL
+        )
+    );
+}
+TEST(ResolveTest, EmptyResolution)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        resolveComplaint(
+            &app,
+            1001,
+            ""
+        )
+    );
+}
+TEST(ResolveTest, ComplaintNotFound)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        resolveComplaint(
+            &app,
+            1001,
+            "Done"
+        )
+    );
+}
+TEST(ResolveTest, InvalidStatus)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        resolveComplaint(
+            &app,
+            1001,
+            "Done"
+        )
+    );
+}
+TEST(ResolveTest, InProgressSuccess)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_IN_PROGRESS;
+
+    app.complaintHead = &node;
+
+    EXPECT_TRUE(
+        resolveComplaint(
+            &app,
+            1001,
+            "Fixed"
+        )
+    );
+}
+//close complaint
+TEST(CloseTest, NullApp)
+{
+    EXPECT_FALSE(
+        closeComplaint(
+            NULL,
+            1001
+        )
+    );
+}
+TEST(CloseTest, ComplaintNotFound)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        closeComplaint(
+            &app,
+            1001
+        )
+    );
+}
+TEST(CloseTest, NotResolved)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        closeComplaint(
+            &app,
+            1001
+        )
+    );
+}
+TEST(CloseTest, EmptyResolution)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_RESOLVED;
+
+    app.complaintHead = &node;
+
+    EXPECT_FALSE(
+        closeComplaint(
+            &app,
+            1001
+        )
+    );
+}
+TEST(CloseTest, Success)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_RESOLVED;
+
+    strcpy(
+        node.data.resolution,
+        "Resolved"
+    );
+
+    app.complaintHead = &node;
+
+    EXPECT_TRUE(
+        closeComplaint(
+            &app,
+            1001
+        )
+    );
+}
+//addComplaintHistory
+TEST(HistoryTest, NullApp)
+{
+    EXPECT_FALSE(
+        addComplaintHistory(
+            NULL,
+            1001,
+            "Created",
+            "Registered"
+        )
+    );
+}
+TEST(HistoryTest, NullAction)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        addComplaintHistory(
+            &app,
+            1001,
+            NULL,
+            "Details"
+        )
+    );
+}
+TEST(HistoryTest, NullDetails)
+{
+    ApplicationContext app{};
+
+    EXPECT_FALSE(
+        addComplaintHistory(
+            &app,
+            1001,
+            "Created",
+            NULL
+        )
+    );
+}
+TEST(HistoryTest, Success)
+{
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        addComplaintHistory(
+            &app,
+            1001,
+            "Created",
+            "Complaint Registered"
+        )
+    );
+}
+//dislayComplaintHistory
+TEST(DisplayHistoryTest, NullApp)
+{
+    displayComplaintHistory(
+        NULL,
+        1001
+    );
+
+    SUCCEED();
+}
+TEST(DisplayHistoryTest, EmptyHistory)
+{
+    ApplicationContext app{};
+
+    displayComplaintHistory(
+        &app,
+        1001
+    );
+
+    SUCCEED();
+}
+TEST(DisplayHistoryTest, MatchingHistory)
+{
+    ApplicationContext app{};
+    HistoryNode node{};
+
+    node.data.complaintId = 1001;
+
+    strcpy(
+        node.data.action,
+        "Created"
+    );
+
+    strcpy(
+        node.data.details,
+        "Registered"
+    );
+
+    strcpy(
+        node.data.timestamp,
+        "2024-01-01"
+    );
+
+    app.historyHead = &node;
+
+    displayComplaintHistory(
+        &app,
+        1001
+    );
+
+    SUCCEED();
+}
+TEST(DisplayHistoryTest, NonMatchingHistory)
+{
+    ApplicationContext app{};
+    HistoryNode node{};
+
+    node.data.complaintId = 2000;
+
+    app.historyHead = &node;
+
+    displayComplaintHistory(
+        &app,
+        1001
+    );
+
+    SUCCEED();
+}
+//generate summary report
+TEST(SummaryReportTest, NullApp)
+{
+    generateSummaryReport(NULL);
+
+    SUCCEED();
+}
+TEST(SummaryReportTest, EmptyList)
+{
+    ApplicationContext app{};
+
+    generateSummaryReport(&app);
+
+    SUCCEED();
+}
+TEST(SummaryReportTest, MultipleComplaints)
+{
+    ApplicationContext app{};
+
+    ComplaintNode node1{};
+    ComplaintNode node2{};
+    ComplaintNode node3{};
+
+    node1.data.status = STATUS_OPEN;
+    node1.data.priority = PRIORITY_HIGH;
+    node1.data.category = CATEGORY_DAMAGED_PRODUCT;
+
+    node2.data.status = STATUS_RESOLVED;
+    node2.data.priority = PRIORITY_LOW;
+    node2.data.category = CATEGORY_PAYMENT_ISSUE;
+
+    node3.data.status = STATUS_CLOSED;
+    node3.data.priority = PRIORITY_CRITICAL;
+    node3.data.category = CATEGORY_OTHER;
+
+    node1.next = &node2;
+    node2.next = &node3;
+
+    app.complaintHead = &node1;
+
+    generateSummaryReport(&app);
+
+    SUCCEED();
+}
+//initialize Application
+TEST(InitializeTest, NullApp)
+{
+    EXPECT_FALSE(
+        initializeApplication(NULL)
+    );
+}
+TEST(InitializeTest, Success)
+{
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        initializeApplication(&app)
+    );
+
+    freeApplicationData(&app);
+}
+//SaveComplaint
+TEST(SaveComplaintTest, NullApp)
+{
+    EXPECT_FALSE(
+        saveComplaints(NULL)
+    );
+}
+TEST(SaveComplaintTest, Success)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+
+    app.complaintHead = &node;
+
+    EXPECT_TRUE(
+        saveComplaints(&app)
+    );
+}
+//SaveHistory
+TEST(SaveHistoryTest, NullApp)
+{
+    EXPECT_FALSE(
+        saveHistory(NULL)
+    );
+}
+TEST(SaveHistoryTest, Success)
+{
+    ApplicationContext app{};
+    HistoryNode node{};
+
+    node.data.historyId = 1;
+
+    app.historyHead = &node;
+
+    EXPECT_TRUE(
+        saveHistory(&app)
+    );
+}
+//Save counter
+TEST(SaveCounterTest, NullApp)
+{
+    EXPECT_FALSE(
+        saveCounters(NULL)
+    );
+}
+TEST(SaveCounterTest, Success)
+{
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        saveCounters(&app)
+    );
+}
+//WriteAuditLog
+TEST(AuditLogTest, NullAction)
+{
+    writeAuditLog(NULL);
+
+    SUCCEED();
+}
+TEST(AuditLogTest, Success)
+{
+    writeAuditLog(
+        "UNIT_TEST"
+    );
+
+    SUCCEED();
+}
+//writeComplaintAuditLog
+TEST(ComplaintAuditTest, NullActor)
+{
+    writeComplaintAuditLog(
+        NULL,
+        "UPDATE",
+        1001,
+        "SUCCESS"
+    );
+
+    SUCCEED();
+}
+TEST(ComplaintAuditTest, Success)
+{
+    writeComplaintAuditLog(
+        "ADMIN",
+        "UPDATE",
+        1001,
+        "SUCCESS"
+    );
+
+    SUCCEED();
+}
+//writeApplicationLog
+TEST(ApplicationLogTest, NullOperation)
+{
+    writeApplicationLog(
+        NULL,
+        "Error"
+    );
+
+    SUCCEED();
+}
+TEST(ApplicationLogTest, Success)
+{
+    writeApplicationLog(
+        "UNIT_TEST",
+        "No Error"
+    );
+
+    SUCCEED();
+}
+//freeApplicationData
+TEST(FreeDataTest, NullApp)
+{
+    freeApplicationData(NULL);
+
+    SUCCEED();
+}
+TEST(FreeDataTest, FreeAllocatedNodes)
+{
+    ApplicationContext app{};
+
+    ComplaintNode *c =
+        (ComplaintNode *)
+        malloc(sizeof(ComplaintNode));
+
+    HistoryNode *h =
+        (HistoryNode *)
+        malloc(sizeof(HistoryNode));
+
+    c->next = NULL;
+    h->next = NULL;
+
+    app.complaintHead = c;
+    app.historyHead = h;
+
+    freeApplicationData(&app);
+
+    EXPECT_EQ(
+        app.complaintHead,
+        nullptr
+    );
+
+    EXPECT_EQ(
+        app.historyHead,
+        nullptr
+    );
+}
+//validstatusTransition
+TEST(StatusTransition, EscalatedToInProgress)
+{
+    EXPECT_TRUE(
+        isValidStatusTransition(
+            STATUS_ESCALATED,
+            STATUS_IN_PROGRESS
+        )
+    );
+}
+
+TEST(StatusTransition, EscalatedToResolved)
+{
+    EXPECT_TRUE(
+        isValidStatusTransition(
+            STATUS_ESCALATED,
+            STATUS_RESOLVED
+        )
+    );
+}
+
+TEST(StatusTransition, ResolvedToClosed)
+{
+    EXPECT_TRUE(
+        isValidStatusTransition(
+            STATUS_RESOLVED,
+            STATUS_CLOSED
+        )
+    );
+}
+
+TEST(StatusTransition, ClosedToAnything)
+{
+    EXPECT_FALSE(
+        isValidStatusTransition(
+            STATUS_CLOSED,
+            STATUS_OPEN
+        )
+    );
+}
+//updateComplaintPriority
+TEST(PriorityTest, Success)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.complaintId = 1001;
+    node.data.status = STATUS_OPEN;
+
+    app.complaintHead = &node;
+
+    EXPECT_TRUE(
+        updateComplaintPriority(
+            &app,
+            1001,
+            PRIORITY_HIGH
+        )
+    );
+}
+//generateSummaryReportMissed
+TEST(SummaryReportTest, CriticalPendingComplaint)
+{
+    ApplicationContext app{};
+    ComplaintNode node{};
+
+    node.data.status = STATUS_OPEN;
+    node.data.priority = PRIORITY_CRITICAL;
+    node.data.category = CATEGORY_OTHER;
+
+    app.complaintHead = &node;
+
+    generateSummaryReport(&app);
+
+    SUCCEED();
+}
+//InitializeApplication
+TEST(InitializeTest, LoadComplaintRecord)
+{
+    Complaint complaint{};
+
+    complaint.complaintId = 1001;
+    complaint.category = CATEGORY_DAMAGED_PRODUCT;
+    complaint.priority = PRIORITY_HIGH;
+    complaint.status = STATUS_OPEN;
+
+    FILE *fp = fopen(COMPLAINT_FILE, "wb");
+
+    fwrite(
+        &complaint,
+        sizeof(complaint),
+        1,
+        fp
+    );
+
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        initializeApplication(&app)
+    );
+
+    freeApplicationData(&app);
+}
+//AppendHistoryNode
+TEST(InitializeTest, LoadHistoryRecord)
+{
+    ComplaintHistory history{};
+
+    history.historyId = 1;
+    history.complaintId = 1001;
+
+    FILE *fp = fopen(HISTORY_FILE, "wb");
+
+    fwrite(
+        &history,
+        sizeof(history),
+        1,
+        fp
+    );
+
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        initializeApplication(&app)
+    );
+
+    freeApplicationData(&app);
+}
+//InvalidComplaintRecord
+TEST(InitializeTest, InvalidComplaintRecord)
+{
+    Complaint complaint{};
+
+    complaint.complaintId = 0;
+
+    FILE *fp = fopen(COMPLAINT_FILE, "wb");
+
+    fwrite(
+        &complaint,
+        sizeof(complaint),
+        1,
+        fp
+    );
+
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        initializeApplication(&app)
+    );
+
+    freeApplicationData(&app);
+}
+//FreeApplicationData
+TEST(FreeDataTest, MultipleNodes)
+{
+    ApplicationContext app{};
+
+    ComplaintNode *c1 =
+        (ComplaintNode*)malloc(sizeof(ComplaintNode));
+    ComplaintNode *c2 =
+        (ComplaintNode*)malloc(sizeof(ComplaintNode));
+
+    c1->next = c2;
+    c2->next = NULL;
+
+    app.complaintHead = c1;
+
+    freeApplicationData(&app);
+
+    EXPECT_EQ(
+        app.complaintHead,
+        nullptr
+    );
+}
+//CorruptedCounterFile
+TEST(InitializeTest, CorruptedCounterFile)
+{
+    FILE *fp = fopen(
+        COUNTER_FILE,
+        "wb"
+    );
+
+    int x = 5;
+
+    fwrite(
+        &x,
+        sizeof(int),
+        1,
+        fp
+    );
+
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        initializeApplication(&app)
+    );
+
+    freeApplicationData(&app);
+}
+//InvalidHistoryRecord
+TEST(InitializeTest, InvalidHistoryRecord)
+{
+    ComplaintHistory h{};
+
+    h.historyId = 0;
+    h.complaintId = 0;
+
+    FILE *fp =
+        fopen(HISTORY_FILE, "wb");
+
+    fwrite(
+        &h,
+        sizeof(h),
+        1,
+        fp
+    );
+
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        initializeApplication(&app)
+    );
+
+    freeApplicationData(&app);
+}
+//Complaint List Tranversal
+TEST(SaveComplaintTest, MultipleNodes)
+{
+    ApplicationContext app{};
+
+    ComplaintNode n1{};
+    ComplaintNode n2{};
+
+    n1.data.complaintId = 1;
+    n2.data.complaintId = 2;
+
+    n1.next = &n2;
+    n2.next = NULL;
+
+    app.complaintHead = &n1;
+
+    EXPECT_TRUE(saveComplaints(&app));
+}
+//History list Traversal
+TEST(SaveHistoryTest, MultipleNodes)
+{
+    ApplicationContext app{};
+
+    HistoryNode h1{};
+    HistoryNode h2{};
+
+    h1.data.historyId = 1;
+    h2.data.historyId = 2;
+
+    h1.next = &h2;
+    h2.next = NULL;
+
+    app.historyHead = &h1;
+
+    EXPECT_TRUE(saveHistory(&app));
+}
+//Invalid Priority
+TEST(InitializeTest, InvalidPriorityRecord)
+{
+    Complaint c{};
+
+    c.complaintId = 1001;
+    c.category = CATEGORY_DAMAGED_PRODUCT;
+    c.priority = (ComplaintPriority)99;
+    c.status = STATUS_OPEN;
+
+    FILE *fp = fopen(COMPLAINT_FILE, "wb");
+    fwrite(&c, sizeof(c), 1, fp);
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(initializeApplication(&app));
+
+    freeApplicationData(&app);
+}
+//Invalid status
+TEST(InitializeTest, InvalidStatusRecord)
+{
+    Complaint c{};
+
+    c.complaintId = 1001;
+    c.category = CATEGORY_DAMAGED_PRODUCT;
+    c.priority = PRIORITY_HIGH;
+    c.status = (ComplaintStatus)99;
+
+    FILE *fp = fopen(COMPLAINT_FILE, "wb");
+    fwrite(&c, sizeof(c), 1, fp);
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(initializeApplication(&app));
+
+    freeApplicationData(&app);
+}
+//Missing Counter file
+TEST(InitializeTest, MissingCounterFile)
+{
+    remove(COUNTER_FILE);
+
+    ApplicationContext app{};
+
+    EXPECT_TRUE(
+        initializeApplication(&app)
+    );
+
+    freeApplicationData(&app);
 }
