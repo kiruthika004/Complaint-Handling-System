@@ -1,8 +1,0 @@
-2
-admin
-YOUR_PASSWORD
-9
-1001
-
-12
-3

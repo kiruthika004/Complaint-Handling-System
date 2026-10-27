@@ -534,3 +534,183 @@
 [2026-10-27 00:52:12 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
 [2026-10-27 00:52:12 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
 [2026-10-27 00:52:12 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] SYSTEM | AUTO_ESCALATION | Complaint ID: 3 | SUCCESS
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:06:24 +0530 IST] Admin logged out
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:06:24 +0530 IST] Admin logged out
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:06:24 +0530 IST] Admin logged out
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:06:24 +0530 IST] Admin logged out
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:06:24 +0530 IST] Admin logged out
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] Customer registered a complaint
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:06:24 +0530 IST] Application started
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:06:24 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:06:24 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] SYSTEM | AUTO_ESCALATION | Complaint ID: 4 | SUCCESS
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:07:25 +0530 IST] Admin logged out
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:07:25 +0530 IST] Admin logged out
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:07:25 +0530 IST] Admin logged out
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:07:25 +0530 IST] Admin logged out
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | SUCCESS
+[2026-10-27 13:07:25 +0530 IST] Admin logged out
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] Customer registered a complaint
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 13:07:25 +0530 IST] Application started
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 1 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 2 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Attempt: 3 | FAILED
+[2026-10-27 13:07:25 +0530 IST] ADMIN_LOGIN | Maximum attempts reached | ACCESS_DENIED
+[2026-10-27 13:07:25 +0530 IST] Application closed
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] Customer registered a complaint
+[2026-10-27 14:38:25 +0530 IST] ADMIN | PRIORITY_UPDATE | Complaint ID: 1001 | SUCCESS
+[2026-10-27 14:38:25 +0530 IST] ADMIN | STATUS_UPDATE | Complaint ID: 1001 | INVALID_TRANSITION
+[2026-10-27 14:38:25 +0530 IST] ADMIN | STATUS_UPDATE | Complaint ID: 1001 | SUCCESS
+[2026-10-27 14:38:25 +0530 IST] ADMIN | REMARK_ADDED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 14:38:25 +0530 IST] ADMIN | COMPLAINT_ESCALATED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 14:38:25 +0530 IST] ADMIN | COMPLAINT_RESOLVED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 14:38:25 +0530 IST] ADMIN | COMPLAINT_CLOSED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 14:38:25 +0530 IST] UNIT_TEST
+[2026-10-27 14:38:25 +0530 IST] ADMIN | UPDATE | Complaint ID: 1001 | SUCCESS
+[2026-10-27 14:38:25 +0530 IST] SYSTEM | AUTO_ESCALATION | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] Customer registered a complaint
+[2026-10-27 18:28:04 +0530 IST] ADMIN | PRIORITY_UPDATE | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:04 +0530 IST] ADMIN | STATUS_UPDATE | Complaint ID: 1001 | INVALID_TRANSITION
+[2026-10-27 18:28:04 +0530 IST] ADMIN | STATUS_UPDATE | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:04 +0530 IST] ADMIN | REMARK_ADDED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:04 +0530 IST] ADMIN | COMPLAINT_ESCALATED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:05 +0530 IST] ADMIN | COMPLAINT_RESOLVED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:05 +0530 IST] ADMIN | COMPLAINT_CLOSED | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:05 +0530 IST] UNIT_TEST
+[2026-10-27 18:28:05 +0530 IST] ADMIN | UPDATE | Complaint ID: 1001 | SUCCESS
+[2026-10-27 18:28:05 +0530 IST] SYSTEM | AUTO_ESCALATION | Complaint ID: 1001 | SUCCESS

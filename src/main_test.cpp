@@ -19,7 +19,7 @@ TEST(MainTest, ExitImmediately)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "main_exit.txt",
         "r",
         stdin
@@ -46,7 +46,7 @@ TEST(MainTest, CustomerMenuBack)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "custback.txt",
         "r",
         stdin
@@ -75,7 +75,7 @@ TEST(MainTest, AdminLoginFailure)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "adminfail.txt",
         "r",
         stdin
@@ -104,7 +104,7 @@ TEST(MainTest, AdminLoginSuccessLogout)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "adminok.txt",
         "r",
         stdin
@@ -135,7 +135,7 @@ TEST(MainTest, AdminViewAll)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "viewall.txt",
         "r",
         stdin
@@ -167,7 +167,7 @@ TEST(MainTest, SearchComplaintNotFound)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "search.txt",
         "r",
         stdin
@@ -200,7 +200,7 @@ TEST(MainTest, FilterComplaints)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "filter.txt",
         "r",
         stdin
@@ -231,7 +231,7 @@ TEST(MainTest, SummaryReport)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "summary.txt",
         "r",
         stdin
@@ -268,7 +268,7 @@ TEST(MainTest, CustomerRegisterComplaint)
 
     fclose(fp);
 
-    freopen("cust_reg.txt","r",stdin);
+    (void)freopen("cust_reg.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
@@ -293,7 +293,7 @@ TEST(MainTest, CustomerTrackComplaint)
 
     fclose(fp);
 
-    freopen("cust_track.txt","r",stdin);
+    (void)freopen("cust_track.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
@@ -316,7 +316,7 @@ TEST(MainTest, CustomerFeedback)
 
     fclose(fp);
 
-    freopen("cust_feedback.txt","r",stdin);
+    (void)freopen("cust_feedback.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
@@ -331,7 +331,7 @@ TEST(MainTest, AdminUpdatePriority)
         fp,
         "2\n"
         "admin\n"
-        "YOUR_PASSWORD\n"
+        ADMIN_PASSWORD "\n"
         "4\n"
         "1001\n"
         "3\n"
@@ -341,7 +341,7 @@ TEST(MainTest, AdminUpdatePriority)
     );
 
     fclose(fp);
-    freopen("ap.txt","r",stdin);
+    (void)freopen("ap.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
@@ -356,7 +356,7 @@ TEST(MainTest, AdminUpdateStatus)
         fp,
         "2\n"
         "admin\n"
-        "YOUR_PASSWORD\n"
+        ADMIN_PASSWORD "\n"
         "5\n"
         "1001\n"
         "2\n"
@@ -366,7 +366,7 @@ TEST(MainTest, AdminUpdateStatus)
     );
 
     fclose(fp);
-    freopen("as.txt","r",stdin);
+    (void)freopen("as.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
@@ -381,7 +381,7 @@ TEST(MainTest, AdminRemark)
         fp,
         "2\n"
         "admin\n"
-        "YOUR_PASSWORD\n"
+        ADMIN_PASSWORD "\n"
         "6\n"
         "1001\n"
         "Checked by admin\n"
@@ -391,7 +391,7 @@ TEST(MainTest, AdminRemark)
     );
 
     fclose(fp);
-    freopen("remark.txt","r",stdin);
+    (void)freopen("remark.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
@@ -406,7 +406,7 @@ TEST(MainTest, AdminEscalate)
         fp,
         "2\n"
         "admin\n"
-        "YOUR_PASSWORD\n"
+        ADMIN_PASSWORD "\n"
         "7\n"
         "1001\n"
         "2\n"
@@ -417,7 +417,7 @@ TEST(MainTest, AdminEscalate)
     );
 
     fclose(fp);
-    freopen("esc.txt","r",stdin);
+    (void)freopen("esc.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
@@ -432,7 +432,7 @@ TEST(MainTest, AdminResolve)
         fp,
         "2\n"
         "admin\n"
-        "YOUR_PASSWORD\n"
+        ADMIN_PASSWORD "\n"
         "8\n"
         "1001\n"
         "Resolved successfully\n"
@@ -442,9 +442,43 @@ TEST(MainTest, AdminResolve)
     );
 
     fclose(fp);
-    freopen("resolve.txt","r",stdin);
+    (void)freopen("resolve.txt","r",stdin);
 
     EXPECT_EQ(complaint_main(),0);
 
     remove("resolve.txt");
+}
+
+TEST(MainTest, AdminSearchCloseAndHistory)
+{
+    FILE *fp = fopen("admin_close_history.txt", "w");
+
+    fprintf(
+        fp,
+        "2\n"
+        "admin\n"
+        ADMIN_PASSWORD "\n"
+        "2\n"
+        "1001\n"
+        "\n"
+        "9\n"
+        "1001\n"
+        "\n"
+        "10\n"
+        "1001\n"
+        "\n"
+        "12\n"
+        "3\n"
+    );
+
+    fclose(fp);
+    (void)freopen(
+        "admin_close_history.txt",
+        "r",
+        stdin
+    );
+
+    EXPECT_EQ(complaint_main(), 0);
+
+    remove("admin_close_history.txt");
 }

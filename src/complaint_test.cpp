@@ -297,7 +297,7 @@ TEST(ReadLineTest, ValidInput)
     fprintf(fp, "Hello\n");
     fclose(fp);
 
-    freopen("input.txt", "r", stdin);
+    (void)freopen("input.txt", "r", stdin);
 
     char buffer[50];
 
@@ -320,7 +320,7 @@ TEST(ReadLineTest, EmptyThenValid)
     fprintf(fp, "\nWorld\n");
     fclose(fp);
 
-    freopen("input2.txt", "r", stdin);
+    (void)freopen("input2.txt", "r", stdin);
 
     char buffer[50];
 
@@ -348,7 +348,7 @@ TEST(ReadLineTest, LongInput)
 
     fclose(fp);
 
-    freopen("input3.txt", "r", stdin);
+    (void)freopen("input3.txt", "r", stdin);
 
     char buffer[10];
 
@@ -365,6 +365,24 @@ TEST(ReadLineTest, LongInput)
 
     remove("input3.txt");
 }
+TEST(ReadLineTest, EndOfFileClearsBuffer)
+{
+    FILE *fp = fopen("readline_eof.txt", "w");
+    ASSERT_NE(fp, nullptr);
+    fclose(fp);
+
+    ASSERT_NE(
+        freopen("readline_eof.txt", "r", stdin),
+        nullptr
+    );
+
+    char buffer[10] = "not empty";
+
+    readLine("Prompt", buffer, sizeof(buffer));
+
+    EXPECT_STREQ(buffer, "");
+    remove("readline_eof.txt");
+}
 //read integer
 TEST(ReadIntegerTest, ValidNumber)
 {
@@ -372,7 +390,7 @@ TEST(ReadIntegerTest, ValidNumber)
     fprintf(fp, "5\n");
     fclose(fp);
 
-    freopen("int1.txt", "r", stdin);
+    (void)freopen("int1.txt", "r", stdin);
 
     EXPECT_EQ(
         readInteger(
@@ -396,7 +414,7 @@ TEST(ReadIntegerTest, InvalidThenValid)
 
     fclose(fp);
 
-    freopen("int2.txt", "r", stdin);
+    (void)freopen("int2.txt", "r", stdin);
 
     EXPECT_EQ(
         readInteger(
@@ -420,7 +438,7 @@ TEST(ReadIntegerTest, BelowMinimumThenValid)
 
     fclose(fp);
 
-    freopen("int3.txt", "r", stdin);
+    (void)freopen("int3.txt", "r", stdin);
 
     EXPECT_EQ(
         readInteger(
@@ -441,7 +459,7 @@ TEST(PauseScreenTest, EnterPressed)
 
     fclose(fp);
 
-    freopen("pause.txt", "r", stdin);
+    (void)freopen("pause.txt", "r", stdin);
 
     pauseScreen();
 
@@ -629,7 +647,7 @@ TEST(TrackComplaintTest, ValidComplaintFound)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "track1.txt",
         "r",
         stdin
@@ -670,7 +688,7 @@ TEST(TrackComplaintTest, InvalidOrderId)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "track2.txt",
         "r",
         stdin
@@ -705,7 +723,7 @@ TEST(FilterComplaintTest, StatusMatch)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "filter1.txt",
         "r",
         stdin
@@ -730,7 +748,7 @@ TEST(FilterComplaintTest, PriorityMatch)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "filter2.txt",
         "r",
         stdin
@@ -756,7 +774,7 @@ TEST(FilterComplaintTest, CategoryMatch)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "filter3.txt",
         "r",
         stdin
@@ -782,7 +800,7 @@ TEST(FilterComplaintTest, NoMatch)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "filter4.txt",
         "r",
         stdin
@@ -823,7 +841,7 @@ TEST(RegisterComplaintTest, SuccessfulRegistration)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "register.txt",
         "r",
         stdin
@@ -899,7 +917,7 @@ TEST(SubmitFeedbackTest, ComplaintNotFound)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "feedback1.txt",
         "r",
         stdin
@@ -935,7 +953,7 @@ TEST(SubmitFeedbackTest, NotResolved)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "feedback2.txt",
         "r",
         stdin
@@ -973,7 +991,7 @@ TEST(SubmitFeedbackTest, Success)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "feedback3.txt",
         "r",
         stdin
@@ -1009,7 +1027,7 @@ TEST(RegisterComplaintTest, InvalidEmailThenValid)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "reg_email.txt",
         "r",
         stdin
@@ -1045,7 +1063,7 @@ TEST(RegisterComplaintTest, InvalidPhoneThenValid)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "reg_phone.txt",
         "r",
         stdin
@@ -1079,7 +1097,7 @@ TEST(RegisterComplaintTest, CategoryPaymentIssue)
 
     fclose(fp);
 
-    freopen("cat5.txt","r",stdin);
+    (void)freopen("cat5.txt","r",stdin);
 
     EXPECT_EQ(registerComplaint(&app),1);
 
@@ -1110,7 +1128,7 @@ TEST(TrackComplaintTest, MatchUsingPhone)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "phonematch.txt",
         "r",
         stdin
@@ -1151,7 +1169,7 @@ TEST(RegisterComplaintTest, AppendToExistingList)
 
     fclose(fp);
 
-    freopen(
+    (void)freopen(
         "append.txt",
         "r",
         stdin
@@ -1185,7 +1203,7 @@ TEST(RegisterComplaintTest, CategoryMissingItem)
 
     fclose(fp);
 
-    freopen("cat3.txt","r",stdin);
+    (void)freopen("cat3.txt","r",stdin);
 
     EXPECT_EQ(registerComplaint(&app),1);
 
@@ -1212,7 +1230,7 @@ TEST(RegisterComplaintTest, CategoryWrongDelivery)
 
     fclose(fp);
 
-    freopen("cat2.txt","r",stdin);
+    (void)freopen("cat2.txt","r",stdin);
 
     EXPECT_EQ(
         registerComplaint(&app),
@@ -1242,7 +1260,7 @@ TEST(RegisterComplaintTest, CategoryDeliveryDelay)
 
     fclose(fp);
 
-    freopen("cat4.txt","r",stdin);
+    (void)freopen("cat4.txt","r",stdin);
 
     EXPECT_EQ(
         registerComplaint(&app),
@@ -1272,7 +1290,7 @@ TEST(RegisterComplaintTest, CategoryRefundDelay)
 
     fclose(fp);
 
-    freopen("cat6.txt","r",stdin);
+    (void)freopen("cat6.txt","r",stdin);
 
     EXPECT_EQ(
         registerComplaint(&app),
@@ -1302,7 +1320,7 @@ TEST(RegisterComplaintTest, CategoryCancellationIssue)
 
     fclose(fp);
 
-    freopen("cat7.txt","r",stdin);
+    (void)freopen("cat7.txt","r",stdin);
 
     EXPECT_EQ(
         registerComplaint(&app),
@@ -1332,7 +1350,7 @@ TEST(RegisterComplaintTest, CategoryProductQuality)
 
     fclose(fp);
 
-    freopen("cat8.txt","r",stdin);
+    (void)freopen("cat8.txt","r",stdin);
 
     EXPECT_EQ(
         registerComplaint(&app),
@@ -1362,7 +1380,7 @@ TEST(RegisterComplaintTest, CategoryOther)
 
     fclose(fp);
 
-    freopen("cat9.txt","r",stdin);
+    (void)freopen("cat9.txt","r",stdin);
 
     EXPECT_EQ(
         registerComplaint(&app),
@@ -2228,13 +2246,10 @@ TEST(FreeDataTest, FreeAllocatedNodes)
 {
     ApplicationContext app{};
 
-    ComplaintNode *c =
-        (ComplaintNode *)
-        malloc(sizeof(ComplaintNode));
+    ComplaintNode *c = new ComplaintNode{};
 
-    HistoryNode *h =
-        (HistoryNode *)
-        malloc(sizeof(HistoryNode));
+    HistoryNode *h = new HistoryNode{};
+            
 
     c->next = NULL;
     h->next = NULL;
@@ -2385,6 +2400,54 @@ TEST(InitializeTest, LoadHistoryRecord)
 
     freeApplicationData(&app);
 }
+TEST(InitializeTest, LoadMultipleComplaintAndHistoryRecords)
+{
+    Complaint complaints[2]{};
+    ComplaintHistory histories[2]{};
+
+    complaints[0].complaintId = 1001;
+    complaints[0].category = CATEGORY_DAMAGED_PRODUCT;
+    complaints[0].priority = PRIORITY_HIGH;
+    complaints[0].status = STATUS_OPEN;
+    complaints[1] = complaints[0];
+    complaints[1].complaintId = 1002;
+
+    histories[0].historyId = 1;
+    histories[0].complaintId = 1001;
+    histories[1] = histories[0];
+    histories[1].historyId = 2;
+    histories[1].complaintId = 1002;
+
+    FILE *fp = fopen(COMPLAINT_FILE, "wb");
+    ASSERT_NE(fp, nullptr);
+    ASSERT_EQ(
+        fwrite(complaints, sizeof(complaints[0]), 2, fp),
+        2U
+    );
+    fclose(fp);
+
+    fp = fopen(HISTORY_FILE, "wb");
+    ASSERT_NE(fp, nullptr);
+    ASSERT_EQ(
+        fwrite(histories, sizeof(histories[0]), 2, fp),
+        2U
+    );
+    fclose(fp);
+
+    ApplicationContext app{};
+
+    ASSERT_TRUE(initializeApplication(&app));
+    ASSERT_NE(app.complaintHead, nullptr);
+    ASSERT_NE(app.complaintHead->next, nullptr);
+    EXPECT_EQ(app.complaintHead->next->data.complaintId, 1002U);
+    ASSERT_NE(app.historyHead, nullptr);
+    ASSERT_NE(app.historyHead->next, nullptr);
+    EXPECT_EQ(app.historyHead->next->data.historyId, 2U);
+
+    freeApplicationData(&app);
+    remove(COMPLAINT_FILE);
+    remove(HISTORY_FILE);
+}
 //InvalidComplaintRecord
 TEST(InitializeTest, InvalidComplaintRecord)
 {
@@ -2416,10 +2479,10 @@ TEST(FreeDataTest, MultipleNodes)
 {
     ApplicationContext app{};
 
-    ComplaintNode *c1 =
-        (ComplaintNode*)malloc(sizeof(ComplaintNode));
-    ComplaintNode *c2 =
-        (ComplaintNode*)malloc(sizeof(ComplaintNode));
+   ComplaintNode *c1 = new ComplaintNode{};
+
+   ComplaintNode *c2 = new ComplaintNode{};
+
 
     c1->next = c2;
     c2->next = NULL;

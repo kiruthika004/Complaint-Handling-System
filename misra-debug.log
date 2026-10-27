@@ -1,0 +1,162 @@
+Checking src/complaint_test.cpp ...
+Defines:
+Undefines:
+Includes:
+Platform:native
+src/complaint_test.cpp:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1: python3 /usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py misra.py --cli src/complaint_test.cpp.24948.dump
+Output:
+Traceback (most recent call last):
+  File "/usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py", line 8, in <module>
+    runpy.run_path(addon, run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "misra.py", line 5187, in <module>
+    main()
+    ~~~~^^
+  File "misra.py", line 5129, in main
+    checker.parseDump(item,checker.path_premium_addon)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "misra.py", line 4724, in parseDump
+    self.is_cpp = data.language == 'cpp'
+                  ^^^^^^^^^^^^^
+AttributeError: 'CppcheckData' object has no attribute 'language' [internalError]
+
+^
+1/6 files checked 43% done
+Checking src/main.c ...
+Defines:
+Undefines:
+Includes:
+Platform:native
+src/main.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1: python3 /usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py misra.py --cli src/main.c.24948.dump
+Output:
+Traceback (most recent call last):
+  File "/usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py", line 8, in <module>
+    runpy.run_path(addon, run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "misra.py", line 5187, in <module>
+    main()
+    ~~~~^^
+  File "misra.py", line 5129, in main
+    checker.parseDump(item,checker.path_premium_addon)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "misra.py", line 4724, in parseDump
+    self.is_cpp = data.language == 'cpp'
+                  ^^^^^^^^^^^^^
+AttributeError: 'CppcheckData' object has no attribute 'language' [internalError]
+
+^
+2/6 files checked 53% done
+Checking src/main_test.cpp ...
+Defines:
+Undefines:
+Includes:
+Platform:native
+src/main_test.cpp:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1: python3 /usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py misra.py --cli src/main_test.cpp.24948.dump
+Output:
+Traceback (most recent call last):
+  File "/usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py", line 8, in <module>
+    runpy.run_path(addon, run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "misra.py", line 5187, in <module>
+    main()
+    ~~~~^^
+  File "misra.py", line 5129, in main
+    checker.parseDump(item,checker.path_premium_addon)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "misra.py", line 4724, in parseDump
+    self.is_cpp = data.language == 'cpp'
+                  ^^^^^^^^^^^^^
+AttributeError: 'CppcheckData' object has no attribute 'language' [internalError]
+
+^
+3/6 files checked 60% done
+Checking src/srcmodule1.c ...
+Defines:
+Undefines:
+Includes:
+Platform:native
+src/srcmodule1.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1: python3 /usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py misra.py --cli src/srcmodule1.c.24948.dump
+Output:
+Traceback (most recent call last):
+  File "/usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py", line 8, in <module>
+    runpy.run_path(addon, run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "misra.py", line 5187, in <module>
+    main()
+    ~~~~^^
+  File "misra.py", line 5129, in main
+    checker.parseDump(item,checker.path_premium_addon)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "misra.py", line 4724, in parseDump
+    self.is_cpp = data.language == 'cpp'
+                  ^^^^^^^^^^^^^
+AttributeError: 'CppcheckData' object has no attribute 'language' [internalError]
+
+^
+4/6 files checked 69% done
+Checking src/srcmodule2.c ...
+Defines:
+Undefines:
+Includes:
+Platform:native
+src/srcmodule2.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1: python3 /usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py misra.py --cli src/srcmodule2.c.24948.dump
+Output:
+Traceback (most recent call last):
+  File "/usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py", line 8, in <module>
+    runpy.run_path(addon, run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "misra.py", line 5187, in <module>
+    main()
+    ~~~~^^
+  File "misra.py", line 5129, in main
+    checker.parseDump(item,checker.path_premium_addon)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "misra.py", line 4724, in parseDump
+    self.is_cpp = data.language == 'cpp'
+                  ^^^^^^^^^^^^^
+AttributeError: 'CppcheckData' object has no attribute 'language' [internalError]
+
+^
+5/6 files checked 95% done
+Checking src/utils.c ...
+Defines:
+Undefines:
+Includes:
+Platform:native
+src/utils.c:0:0: error: Bailing out from analysis: Checking file failed: Failed to execute addon 'misra' - exitcode is 1: python3 /usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py misra.py --cli src/utils.c.24948.dump
+Output:
+Traceback (most recent call last):
+  File "/usr/lib/x86_64-linux-gnu/cppcheck/addons/runaddon.py", line 8, in <module>
+    runpy.run_path(addon, run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "misra.py", line 5187, in <module>
+    main()
+    ~~~~^^
+  File "misra.py", line 5129, in main
+    checker.parseDump(item,checker.path_premium_addon)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "misra.py", line 4724, in parseDump
+    self.is_cpp = data.language == 'cpp'
+                  ^^^^^^^^^^^^^
+AttributeError: 'CppcheckData' object has no attribute 'language' [internalError]
+
+^
+6/6 files checked 100% done
