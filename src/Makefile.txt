@@ -106,5 +106,10 @@ clean:
     rm -f $(TEST_TARGET)
     rm -f valgrind_report.txt
     rm -f helgrind_report.txt
+
+#Execute Project
+run:
+	gcc -g *.c -o main \
+	./main
  
 .PHONY: all test coverage valgrind valgrind-report helgrind helgrind-summary cppcheck misra clean
