@@ -1,0 +1,110 @@
+# Compiler Settings
+CC = gcc
+CXX = g++
+CFLAGS = --coverage -Isrc
+LDFLAGS = --coverage
+ 
+# Source Files
+SRC1 = src/srcmodule1.c
+SRC2 = src/srcmodule2.c
+UTILS = src/utils.c
+TEST = src/complaint_test.cpp
+ 
+# Object Files
+OBJ1 = module1.o
+OBJ2 = module2.o
+OBJ3 = utils.o
+ 
+# Targets
+TARGET = main
+TEST_TARGET = complaint_tests
+ 
+# Default Target
+all: $(TEST_TARGET)
+ 
+# Compile Object Files
+$(OBJ1): $(SRC1)
+    $(CC) $(CFLAGS) -c $(SRC1) -o $(OBJ1)
+ 
+$(OBJ2): $(SRC2)
+    $(CC) $(CFLAGS) -c $(SRC2) -o $(OBJ2)
+ 
+$(OBJ3): $(UTILS)
+    $(CC) $(CFLAGS) -c $(UTILS) -o $(OBJ3)
+ 
+# Build GTest Executable
+$(TEST_TARGET): $(OBJ1) $(OBJ2) $(OBJ3)
+    $(CXX) --coverage \
+    $(TEST) \
+    $(OBJ1) \
+    $(OBJ2) \
+    $(OBJ3) \
+    -Isrc \
+    -lgtest \
+    -lgtest_main \
+    -lpthread \
+    -o $(TEST_TARGET)
+ 
+# Run Unit Tests
+test: $(TEST_TARGET)
+    ./$(TEST_TARGET)
+ 
+# Generate Coverage Report
+coverage: test
+    gcov -b utils.gcno
+    gcov -b module1.gcno
+    gcov -b module2.gcno
+ 
+# Run Valgrind
+valgrind:
+    valgrind \
+    --leak-check=full \
+    --show-leak-kinds=all \
+    --track-origins=yes \
+    ./$(TARGET)
+ 
+# Generate Valgrind Report
+valgrind-report:
+    valgrind \
+    --leak-check=full \
+    --log-file=valgrind_report.txt \
+    ./$(TARGET)
+ 
+# Run Helgrind
+helgrind:
+    valgrind \
+    --tool=helgrind \
+    --history-level=approx \
+    --read-var-info=no \
+    --log-file=helgrind_report.txt \
+    ./$(TARGET)
+ 
+# Display Helgrind Summary
+helgrind-summary:
+    grep "ERROR SUMMARY" helgrind_report.txt
+ 
+# Static Code Analysis
+cppcheck:
+    cppcheck \
+    --enable=warning,style,portability \
+    --std=c99 \
+    --platform=unix64 \
+    -I include \
+    src
+ 
+# MISRA Compliance Check
+misra:
+    cppcheck \
+    --addon=/usr/lib/x86_64-linux-gnu/cppcheck/addons/misra.py \
+    src
+ 
+# Clean Build Files
+clean:
+    find . -name "*.gcda" -delete
+    find . -name "*.gcno" -delete
+    rm -f *.o
+    rm -f $(TEST_TARGET)
+    rm -f valgrind_report.txt
+    rm -f helgrind_report.txt
+ 
+.PHONY: all test coverage valgrind valgrind-report helgrind helgrind-summary cppcheck misra clean
